@@ -1,0 +1,55 @@
+Peaceful:
+  Marvelous = 23ms
+  Perfect = 57ms
+  Great = 101ms
+  Good = 141ms
+  Okay = 169ms (nice)
+
+Lenient:
+  Marvelous = 20ms
+  Perfect = 52ms
+  Great = 91ms
+  Good = 128ms
+  Okay = 153ms
+
+Chill:
+  Marvelous = 19ms
+  Perfect = 47ms
+  Great = 83ms
+  Good = 116ms
+  Okay = 139ms
+
+Standard*:
+  Marvelous = 18ms
+  Perfect = 43ms
+  Great = 76ms
+  Good = 106ms
+  Okay = 127ms
+
+Tough:
+  Marvelous = 14ms
+  Perfect = 35ms
+  Great = 62ms
+  Good = 87ms
+  Okay = 111ms
+
+Extreme:
+  Marvelous = 13ms
+  Perfect = 32ms
+  Great = 57ms
+  Good = 79ms
+  Okay = 100ms
+
+Impossible:
+  Marvelous = 8ms
+  Perfect = 20ms
+  Great = 35ms
+  Good = 49ms
+  Okay = 75ms
+
+JUSTICE: //this one is a joke :P
+  Marvelous = 4ms
+  Perfect = 9ms
+  Great = 18ms
+  Good = 27ms
+  Okay = 36ms
