@@ -27,6 +27,8 @@ typedef SwagSong =
 	var stage:String;
 	var healthdrainKill:Bool;
 
+	var customMessage:String; //optional
+
 	var arrowSkin:String;
 	var splashSkin:String;
 	var validScore:Bool;

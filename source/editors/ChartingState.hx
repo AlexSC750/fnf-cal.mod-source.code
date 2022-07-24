@@ -163,6 +163,7 @@ class ChartingState extends MusicBeatState
 		0.25,
 		0.5,
 		1,
+		1.5,
 		2,
 		3,
 		4,
@@ -170,7 +171,10 @@ class ChartingState extends MusicBeatState
 		8,
 		12,
 		16,
-		24
+		24,
+		32,
+		48,
+		64 //not sorry
 	];
 	var curZoom:Int = 2;
 
@@ -217,6 +221,7 @@ class ChartingState extends MusicBeatState
 
 			_song = {
 				song: 'Test',
+				customMessage: '',
 				notes: [],
 				events: [],
 				characterTrails: false,
@@ -422,6 +427,7 @@ class ChartingState extends MusicBeatState
 	var playSoundDad:FlxUICheckBox = null;
 	var UI_songTitle:FlxUIInputText;
 	var noteSkinInputText:FlxUIInputText;
+	var commentInput:FlxUIInputText;
 	var noteSplashesInputText:FlxUIInputText;
 	var stageDropDown:FlxUIDropDownMenuCustom;
 	function addSongUI():Void
@@ -658,6 +664,11 @@ class ChartingState extends MusicBeatState
 		noteSkinInputText = new FlxUIInputText(player2DropDown.x, player2DropDown.y + 50, 150, skin, 8);
 		blockPressWhileTypingOn.push(noteSkinInputText);
 
+		var comment = PlayState.SONG.customMessage;
+		if(comment == null) comment = '';
+		commentInput = new FlxUIInputText(noteSkinInputText.x + 170, player2DropDown.y + 50, 150, comment, 8);
+		blockPressWhileTypingOn.push(commentInput);
+
 		var songinstVolumeOBJ:FlxUINumericStepper = new FlxUINumericStepper(player1DropDown.x + 140, player1DropDown.y, 0.1, 1.0, 0.1, 1, 1);
 		if (_song.songInstVolume > 0 ) songinstVolumeOBJ.value = _song.songInstVolume; else songinstVolumeOBJ.value = 1;
 		songinstVolumeOBJ.name = 'instplay_Volume';
@@ -710,6 +721,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(new FlxText(player2DropDown.x, player2DropDown.y - 15, 0, 'Opponent:'));
 		tab_group_song.add(new FlxText(gfVersionDropDown.x, gfVersionDropDown.y - 15, 0, 'Girlfriend:'));
 		tab_group_song.add(new FlxText(player1DropDown.x, player1DropDown.y - 15, 0, 'Boyfriend:'));
+		tab_group_song.add(new FlxText(commentInput.x, commentInput.y - 15, 0, 'Comment:'));
 		tab_group_song.add(new FlxText(stageDropDown.x, stageDropDown.y - 15, 0, 'Stage:'));
 		tab_group_song.add(new FlxText(healthdrainOBJ.x, healthdrainOBJ.y - 25, 0, 'Health Drain on \nOpponent Notehit'));
 		tab_group_song.add(new FlxText(noteSkinInputText.x, noteSkinInputText.y - 15, 0, 'Note Texture:'));
@@ -1634,6 +1646,7 @@ class ChartingState extends MusicBeatState
 		}
 		Conductor.songPosition = FlxG.sound.music.time;
 		_song.song = UI_songTitle.text;
+		_song.customMessage = commentInput.text;
 
 		strumLineUpdateY();
 		for (i in 0...8){

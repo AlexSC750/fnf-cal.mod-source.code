@@ -43,6 +43,7 @@ import openfl.Lib;
 import openfl.display.BlendMode;
 import openfl.display.Shader;
 import openfl.filters.ShaderFilter;
+import openfl.display.FPS;
 import openfl.display.StageQuality;
 import openfl.filters.BitmapFilter;
 import openfl.utils.Assets as OpenFlAssets;
@@ -84,17 +85,15 @@ class PlayState extends MusicBeatState
 	public static var cameramovingoffset = 20;
 	public static var cameramovingoffsetbf = 20; // idk why i made literally same variable
 
-	public static var ratingStuff:Array<Dynamic> = [
-		['F', 0.2], //From 0% to 19%
-		['E', 0.4], //From 20% to 39%
-		['D', 0.5], //From 40% to 49%
-		['C', 0.6], //From 50% to 59%
-		['B', 0.69], //From 60% to 68%
-		['A', 0.7], //69%
-		['AA', 0.8], //From 70% to 79%
-		['AAA', 0.9], //From 80% to 89%
-		['AAAA', 1], //From 90% to 99%
-		['AAAAA', 1] //The value on this one isn't used actually, since Perfect is always "1"
+	public static final ratingStuff:Array<Dynamic> = [
+		['F', 0.6], //anything under 60%
+		['D', 0.7], //From 60% to 69% (nice)
+		['C', 0.8], //From 70% to 79%
+		['B', 0.9], //From 80% to 89%
+		['A', 0.95], //From 90% to 94%
+		['S', 0.99], //From 95% to 99%
+		['SS', 1], //From 99% to ever so slightly under 100%
+		['X', 1] //gaming
 	];
 	public static var animatedShaders:Map<String, DynamicShaderHandler> = new Map<String, DynamicShaderHandler>();
 	public var modchartTweens:Map<String, FlxTween> = new Map<String, FlxTween>();
@@ -156,7 +155,6 @@ class PlayState extends MusicBeatState
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 	public var eventNotes:Array<EventNote> = [];
-	public var dum:Note = new Note(-5000.0, 0);
 
 	private var strumLine:FlxSprite;
 
@@ -220,6 +218,7 @@ class PlayState extends MusicBeatState
 	public var textDisplay:FlxText;
 	public var displayQueue:Array<String>= [];
 	public var dqIndex:Int = 0;
+	public var commentTxt:FlxText;
 
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
@@ -346,19 +345,6 @@ class PlayState extends MusicBeatState
 	{
 		Paths.clearStoredMemory();
 
-		ratingStuff = [
-			['F', 0.2], //From 0% to 19%
-			['E', 0.4], //From 20% to 39%
-			['D', 0.5], //From 40% to 49%
-			['C', 0.6], //From 50% to 59%
-			['B', 0.69], //From 60% to 68%
-			['A', 0.7], //69%
-			['AA', 0.8], //From 70% to 79%
-			['AAA', 0.9], //From 80% to 89%
-			['AAAA', 1], //From 90% to 99%
-			['AAAAA', 1] //The value on this one isn't used actually, since Perfect is always "1"
-		];
-
 		// for lua
 		instance = this;
 
@@ -378,34 +364,40 @@ class PlayState extends MusicBeatState
 			rating.ratingMod = 1;
 			rating.score = 350;
 			rating.noteSplash = true;
+			rating.hpMod = 1;
 			ratingsData.push(rating);
 
 			var rating:Rating = new Rating('perf');
 			rating.ratingMod = 0.9825;
+			rating.hpMod = 0.6;
 			rating.score = 320;
 			rating.noteSplash = true;
 			ratingsData.push(rating);
 
 			var rating:Rating = new Rating('great');
 			rating.ratingMod = 0.65;
+			rating.hpMod = 0.25;
 			rating.score = 200;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
 
 			var rating:Rating = new Rating('good');
 			rating.ratingMod = 0.25;
+			rating.hpMod = -0.25;
 			rating.score = 100;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
 
 			var rating:Rating = new Rating('ok');
 			rating.ratingMod = -1;
+			rating.hpMod = -1;
 			rating.score = 50;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
 
 			var rating:Rating = new Rating('bad');
 			rating.ratingMod = -0.5;
+			rating.hpMod = -1;
 			rating.score = 0;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
@@ -1343,6 +1335,14 @@ class PlayState extends MusicBeatState
 			textDisplay.y = timeBarBG.y - 78;
 		}
 
+		commentTxt = new FlxText(0, FlxG.height - 24, FlxG.width, SONG.customMessage, 16);
+		commentTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		commentTxt.scrollFactor.set();
+		commentTxt.borderSize = 1.25;
+		commentTxt.alpha = 0.5;
+		add(commentTxt);
+		commentTxt.x = (FlxG.width - commentTxt.width) - 16;
+
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -1354,6 +1354,7 @@ class PlayState extends MusicBeatState
 		scoreTxt.cameras = [camHUD];
 		songTxt.cameras = [camHUD];
 		textDisplay.cameras = [camHUD];
+		commentTxt.cameras = [camHUD];
 		timeBar.cameras = [camHUD];
 		msTimeTxt.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
@@ -3263,12 +3264,6 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		if (controls.UI_UP_P) {
-			trace(displayQueue);
-			trace(textDisplay.text);
-			trace(dqIndex);
-		}
-
 		if (FlxG.keys.anyJustPressed(debugKeysChart) && !endingSong && !inCutscene && !SONG.disableDebugButtons)
 		{
 			openChartEditor();
@@ -4479,6 +4474,8 @@ class PlayState extends MusicBeatState
 		comboSpr.updateHitbox();
 		rating.updateHitbox();
 
+		health += daRating.hpMod * note.hitHealth * healthGain;
+
 		var seperatedScore:Array<Int> = [];
 
 		if(combo >= 10000) { //no idea why but its there ig
@@ -4810,7 +4807,6 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;
 		if(!practiceMode) songScore -= 10;
 
-		popUpScore(dum);
 		totalPlayed++;
 		RecalculateRating(true);
 
@@ -5005,7 +5001,6 @@ class PlayState extends MusicBeatState
 				combo += 1;
 				if(combo > 77777) combo = 77777;
 				popUpScore(note);
-				health += note.hitHealth * healthGain;
 			}
 
 			if(!note.noAnimation) {

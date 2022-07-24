@@ -2624,6 +2624,12 @@ class FunkinLua {
 			return str.endsWith(end);
 		});
 
+		// customs that i added for no reason -alex
+
+		Lua_helper.add_callback(lua, "changeComment", function(str:String) {
+			PlayState.instance.commentTxt.text = str;
+			PlayState.instance.commentTxt.x = (FlxG.width - PlayState.instance.commentTxt.width) - 16;
+		});
 		call('onCreate', []);
 		#end
 	}

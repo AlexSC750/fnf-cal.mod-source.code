@@ -162,6 +162,7 @@ class Rating
 	public var counter:String = '';
 	public var hitWindow:Null<Int> = 0; //ms
 	public var ratingMod:Float = 1;
+	public var hpMod:Float = 0;
 	public var score:Int = 500;
 	public var noteSplash:Bool = true;
 
