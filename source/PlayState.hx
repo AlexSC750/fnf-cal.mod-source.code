@@ -211,6 +211,7 @@ class PlayState extends MusicBeatState
 	public var instakillOnMiss:Bool = false;
 	public var cpuControlled:Bool = false;
 	public var practiceMode:Bool = false;
+	public var invis:Bool = false;
 	public var mirrorMode:Bool = false;
 	public var randomize:Bool = false;
 
@@ -417,6 +418,7 @@ class PlayState extends MusicBeatState
 		healthLoss = ClientPrefs.getGameplaySetting('healthloss', 1);
 		instakillOnMiss = ClientPrefs.getGameplaySetting('instakill', false);
 		practiceMode = ClientPrefs.getGameplaySetting('practice', false);
+		invis = ClientPrefs.getGameplaySetting('invis', false);
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		mirrorMode = ClientPrefs.getGameplaySetting('mirrorcharts', false);
 		randomize = ClientPrefs.getGameplaySetting('randomcharts', false);
@@ -1487,7 +1489,7 @@ class PlayState extends MusicBeatState
 		{
 			startCountdown();
 		}
-		RecalculateRating();
+		recalculateRating();
 
 		//PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
 		if(ClientPrefs.hitsoundVolume > 0) precacheList.set('hitsound', 'sound');
@@ -2314,7 +2316,7 @@ class PlayState extends MusicBeatState
 
 				var introAssets:Map<String, Array<String>> = new Map<String, Array<String>>();
 				introAssets.set('default', ['ready', 'set', 'go']);
-				introAssets.set('pixel', ['pixelQV/ready-pixel', 'pixelQV/set-pixel', 'pixelQV/date-pixel']);
+				introAssets.set('pixel', ['pixelQV/ready-pixelqv', 'pixelQV/set-pixelqv', 'pixelQV/date-pixelqv']);
 
 				var introAlts:Array<String> = introAssets.get('default');
 				var antialias:Bool = ClientPrefs.globalAntialiasing;
@@ -3220,9 +3222,6 @@ class PlayState extends MusicBeatState
 					}
 				}
 		}
-
-		// stuff displays on the botplay thing now
-		updateDisplayText();
 
 		if(!inCutscene) {
 			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
@@ -4212,13 +4211,16 @@ class PlayState extends MusicBeatState
 		deathCounter = 0;
 		seenCutscene = false;
 
+		Achievements.totalScore += songScore;
+		FlxG.save.data.totalScore = Achievements.totalScore;
+		FlxG.save.flush();
+
 		#if ACHIEVEMENTS_ALLOWED
 		if(achievementObj != null) {
 			return;
 		} else {
-			var achieve:String = checkForAchievement(['week1_nomiss', 'week2_nomiss', 'week3_nomiss', 'week4_nomiss',
-				'week5_nomiss', 'week6_nomiss', 'week7_nomiss', 'ur_bad',
-				'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']);
+			var achieve:String = checkForAchievement(['get_better', 'stumbled', 'perfectionist', 'marvelous',
+			'hype', 'two_keys', 'no_marv', 'equality', 'prepared', '10m_score']);
 
 			if(achieve != null) {
 				startAchievement(achieve);
@@ -4372,11 +4374,13 @@ class PlayState extends MusicBeatState
 	private function popUpScore(note:Note = null):Void
 	{
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
+		if (cpuControlled) noteDiff = 0;
 		allNotesMs += noteDiff;
 		averageMs = allNotesMs/songHits;
 		if (ClientPrefs.showMsText) {
 			msTimeTxt.alpha = 1;
-			msTimeTxt.text =Std.string(Math.round(noteDiff)) + "ms";
+/* 			msTimeTxt.text = Std.string(Math.round(noteDiff)) + "ms"; */ //change this
+			msTimeTxt.text = Highscore.floorDecimal(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset, 2) + ' ms';
 			if (msTimeTxtTween != null){
 				msTimeTxtTween.cancel(); msTimeTxtTween.destroy(); // top 10 awesome code
 			}
@@ -4419,7 +4423,7 @@ class PlayState extends MusicBeatState
 			{
 				songHits++;
 				totalPlayed++;
-				RecalculateRating(false);
+				recalculateRating(false);
 			}
 		}
 
@@ -4732,16 +4736,7 @@ class PlayState extends MusicBeatState
 					goodNoteHit(daNote);
 				}
 			});
-
-			if (controlHoldArray.contains(true) && !endingSong) {
-				#if ACHIEVEMENTS_ALLOWED
-				var achieve:String = checkForAchievement(['oversinging']);
-				if (achieve != null) {
-					startAchievement(achieve);
-				}
-				#end
-			}
-			else if (boyfriend.animation.curAnim != null && boyfriend.holdTimer > Conductor.stepCrochet * 0.0011 * boyfriend.singDuration && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
+			if (boyfriend.animation.curAnim != null && boyfriend.holdTimer > Conductor.stepCrochet * 0.0011 * boyfriend.singDuration && boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 			{
 				boyfriend.dance();
 				//boyfriend.animation.curAnim.finish();
@@ -4781,7 +4776,7 @@ class PlayState extends MusicBeatState
 				daNote.parent.shouldbehidden = true;
 				daNote.kill();
 				//daNote.destroy();
-				RecalculateRating();
+				recalculateRating();
 				return;
 			}
 		}
@@ -4808,7 +4803,7 @@ class PlayState extends MusicBeatState
 		if(!practiceMode) songScore -= 10;
 
 		totalPlayed++;
-		RecalculateRating(true);
+		recalculateRating(true);
 
 		var char:Character = boyfriend;
 		if(daNote.gfNote) {
@@ -4848,7 +4843,7 @@ class PlayState extends MusicBeatState
 				songMisses++;
 			}
 			totalPlayed++;
-			RecalculateRating(true);
+			recalculateRating(true);
 
 			FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
 			// FlxG.sound.play(Paths.sound('missnote1'), 1, false);
@@ -4944,7 +4939,7 @@ class PlayState extends MusicBeatState
 		if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 			time += 0.15;
 		}
-		StrumPlayAnim(true, Std.int(Math.abs(note.noteData)), time);
+		strumPlayAnim(true, Std.int(Math.abs(note.noteData)), time);
 		note.hitByOpponent = true;
 
 		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote]);
@@ -5002,6 +4997,19 @@ class PlayState extends MusicBeatState
 				if(combo > 77777) combo = 77777;
 				popUpScore(note);
 			}
+
+			#if ACHIEVEMENTS_ALLOWED
+			if(achievementObj != null) {
+				return;
+			} else {
+				var achieve:String = checkForAchievement(['1h-k', '3q-k', '1-k', '2-k']);
+	
+				if(achieve != null) {
+					startAchievement(achieve);
+					return;
+				}
+			}
+			#end
 
 			if(!note.noAnimation) {
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
@@ -5061,7 +5069,7 @@ class PlayState extends MusicBeatState
 				if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 					time += 0.15;
 				}
-				StrumPlayAnim(false, Std.int(Math.abs(note.noteData)), time);
+				strumPlayAnim(false, Std.int(Math.abs(note.noteData)), time);
 			} else {
 				var spr = playerStrums.members[note.noteData];
 				if(spr != null)
@@ -5256,12 +5264,7 @@ class PlayState extends MusicBeatState
 				#if ACHIEVEMENTS_ALLOWED
 				Achievements.henchmenDeath++;
 				FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
-				var achieve:String = checkForAchievement(['roadkill_enthusiast']);
-				if (achieve != null) {
-					startAchievement(achieve);
-				} else {
-					FlxG.save.flush();
-				}
+				FlxG.save.flush();
 				FlxG.log.add('Deaths: ' + Achievements.henchmenDeath);
 				#end
 			}
@@ -5372,6 +5375,9 @@ class PlayState extends MusicBeatState
 				iconP1.angle = -8; iconP2.angle = -8;
 			}
 		}
+
+		// stuff displays on the botplay thing now
+		updateDisplayText();
 
 		iconP1.updateHitbox();
 		iconP2.updateHitbox();
@@ -5538,7 +5544,7 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	function StrumPlayAnim(isDad:Bool, id:Int, time:Float) {
+	function strumPlayAnim(isDad:Bool, id:Int, time:Float) {
 		var spr:StrumNote = null;
 		if(isDad) {
 			spr = strumLineNotes.members[id];
@@ -5555,15 +5561,11 @@ class PlayState extends MusicBeatState
 	public var ratingName:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
-	public function RecalculateRating(badHit:Bool = false) {
+	public function recalculateRating(badHit:Bool = false) {
+
 		setOnLuas('score', songScore);
 		setOnLuas('misses', songMisses);
 		setOnLuas('hits', songHits);
-		
-		if (badHit)
-			updateScore(true); // miss notes shouldn't make the scoretxt bounce -Ghost
-		else
-			updateScore(false);
 
 		var ret:Dynamic = callOnLuas('onRecalculateRating', [], false);
 		if(ret != FunkinLua.Function_Stop)
@@ -5604,6 +5606,13 @@ class PlayState extends MusicBeatState
 			if (songMisses > 0 && songMisses < 10) ratingFC = "SDCB";
 			else if (songMisses >= 10) ratingFC = "Clear";
 		}
+
+		//moved this so it doesnt stay a note behind??
+		if (badHit)
+			updateScore(true); // miss notes shouldn't make the scoretxt bounce -Ghost
+		else
+			updateScore(false);
+
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
 		setOnLuas('ratingFC', ratingFC);
@@ -5621,42 +5630,20 @@ class PlayState extends MusicBeatState
 				var unlock:Bool = false;
 				switch(achievementName)
 				{
-					case 'week1_nomiss' | 'week2_nomiss' | 'week3_nomiss' | 'week4_nomiss' | 'week5_nomiss' | 'week6_nomiss' | 'week7_nomiss':
-						if(isStoryMode && campaignMisses + songMisses < 1 && CoolUtil.difficultyString() == 'HARD' && storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice)
-						{
-							var weekName:String = WeekData.getWeekFileName();
-							switch(weekName) //I know this is a lot of duplicated code, but it's easier readable and you can add weeks with different names than the achievement tag
-							{
-								case 'week1':
-									if(achievementName == 'week1_nomiss') unlock = true;
-								case 'week2':
-									if(achievementName == 'week2_nomiss') unlock = true;
-								case 'week3':
-									if(achievementName == 'week3_nomiss') unlock = true;
-								case 'week4':
-									if(achievementName == 'week4_nomiss') unlock = true;
-								case 'week5':
-									if(achievementName == 'week5_nomiss') unlock = true;
-								case 'week6':
-									if(achievementName == 'week6_nomiss') unlock = true;
-								case 'week7':
-									if(achievementName == 'week7_nomiss') unlock = true;
-							}
-						}
-					case 'ur_bad':
-						if(ratingPercent < 0.2 && !practiceMode) {
+					case 'get_better':
+						if(ratingPercent < 0.6 && songMisses >= 10 && !practiceMode) {
 							unlock = true;
 						}
-					case 'ur_good':
-						if(ratingPercent >= 1 && !usedPractice) {
+					case 'stumbled':
+						if(ratingPercent <= 0.7 && songMisses <= 0 && !practiceMode) {
 							unlock = true;
 						}
-					case 'roadkill_enthusiast':
-						if(Achievements.henchmenDeath >= 100) {
+					case 'perfectionist':
+						if((greats <= 0) && (goods <= 0) && (oks <= 0) && (bads <= 0) && (songMisses <= 0) && !usedPractice) {
 							unlock = true;
 						}
-					case 'oversinging':
-						if(boyfriend.holdTimer >= 10 && !usedPractice) {
+					case 'marvelous':
+						if(ratingPercent >= 1 && songMisses <= 0 &&!usedPractice) {
 							unlock = true;
 						}
 					case 'hype':
@@ -5674,14 +5661,22 @@ class PlayState extends MusicBeatState
 								unlock = true;
 							}
 						}
-					case 'toastie':
-						if(/*ClientPrefs.framerate <= 60 &&*/ ClientPrefs.lowQuality && !ClientPrefs.globalAntialiasing && !ClientPrefs.imagesPersist) {
-							unlock = true;
-						}
-					case 'debugger':
-						if(Paths.formatToSongPath(SONG.song) == 'test' && !usedPractice) {
-							unlock = true;
-						}
+					case '1h-k':
+						if (combo >= 500 && !usedPractice) unlock = true;
+					case '3q-k':
+						if (combo >= 750 && !usedPractice) unlock = true;
+					case '1-k':
+						if (combo >= 1000 && !usedPractice) unlock = true;
+					case '2-k':
+						if (combo >= 2000 && !usedPractice) unlock = true;
+					case 'no-marv':
+						if (marvs <= 0  && songMisses <= 0 && !usedPractice) unlock = true;
+					case 'equality':
+						if (marvs == perfs && marvs == greats && marvs == goods && marvs == oks && marvs == bads) unlock = true;
+					case 'prepared':
+						if (songMisses <= 0 && usedPractice) unlock = true;
+					case '10m_score':
+						if (Achievements.totalScore >= 10000000 && !usedPractice) unlock = true;
 				}
 
 				if(unlock) {
@@ -5697,6 +5692,7 @@ class PlayState extends MusicBeatState
 	public function updateDisplayText() {
 		if(cpuControlled && displayQueue.indexOf('Botplay') == -1) displayQueue.push("Botplay");
 		if(practiceMode && displayQueue.indexOf('Practice Mode') == -1) displayQueue.push("Practice Mode");
+		if(invis && displayQueue.indexOf('Performance Mode') == -1) displayQueue.push("Performance Mode");
 		if(chartingMode && displayQueue.indexOf('Charting Mode') == -1) displayQueue.push("Charting Mode");
 		if(instakillOnMiss && displayQueue.indexOf('No Miss') == -1) displayQueue.push("No Miss");
 		if(mirrorMode && displayQueue.indexOf('Mirror Mode') == -1) displayQueue.push("Mirror Mode");
