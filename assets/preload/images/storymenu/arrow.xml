@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="arrow.png">
+	<SubTexture name="idle" x="0" y="00" width="216" height="1080"/>
+</TextureAtlas>

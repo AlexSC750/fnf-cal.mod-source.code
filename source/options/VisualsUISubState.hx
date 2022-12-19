@@ -178,7 +178,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			'noteSkinSettings',
 			'string',
 			'Classic',
-			['Classic', 'Circle']);
+			['Classic', 'Circle', 'StepMania (Default)', 'Quaver (Arrow)', 'In The Groove', 'Stepmania 5 (Etterna)', "CL's Project Mania"]);
 		addOption(option);
 		
 		var option:Option = new Option('Pause Screen Song:',

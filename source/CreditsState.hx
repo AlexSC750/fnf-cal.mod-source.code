@@ -45,14 +45,14 @@ class CreditsState extends MusicBeatState
 		#end
 
 		persistentUpdate = true;
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg = new FlxSprite().loadGraphic(Paths.image('menuCredits'));
 		add(bg);
 		bg.screenCenter();
 		
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		var versionShit:FlxText = new FlxText(FlxG.width * 0.7, FlxG.height - 24, 0, "Press CTRL for Official Discord Server", 12);
+		var versionShit:FlxText = new FlxText(FlxG.width * 0.7, FlxG.height - 24, 0, "Press CTRL for OS Engine's official server!", 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
@@ -86,10 +86,23 @@ class CreditsState extends MusicBeatState
 		#end
 
 		var pisspoop:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
+			['Lumi Mod Devs + Links'],
+			['Nova',	'lumi/nova',		'I don’t know, I just barged in and started uploading crap\nand it all worked out. -Nova\n(Music Composer)',''	,	'6DFF84'],
+			['Jot',		'lumi/jot',		'me big help, and do and stuff\nnow SUBSCRIBLE TO MY YOUTUBE NOW IDIOTS -Jot\n(Music Composer and More)','https://youtube.com/channel/UCo0inNnafRNDHxOaT2R_VTw',	'A349A4'],
+			['Ghiga',	'lumi/ghiga',	'Menu background? I barely even know her! -Ghiga\n(The one who started it all)','https://twitter.com/Ghiga0w0',			'6C5292'],
+			['Plaguecat','lumi/plaguecat','AKA Stagehand, Vector artist and crappy song writer -Plaguecat\n(Background Designer)',	'https://soundcloud.com/plaguecat',	'3A0049'],
+			['medic gaming (wells)','lumi/medic-gaming','i dunno i made some icons and some sprites ig,\n*insert a tf2 joke here* -Ciestl\n(Icon Designer)','https://www.youtube.com/channel/UC0Jb7oYecp9Qh_Dhfx1kR9Q','E23222'],
+			['AlexSC',	'lumi/navy',		"What do you mean I can't just spam random code and hope it works?\n(Programmer)\n0x636174",'',					'4000FF'],
+			['Lumi Mod Discord Server',			'lumi/mod-server',				'The discord for the mod!',				'https://discord.gg/YVfa6xERRZ',		'08BCF9'],
+			[''], //kinda like how all the other credits are organized and then theres us lmao
+			['Miscellaneous Mentions'],
+			['Quaver Dev Team',		'misc/quaver',			"Inspiration of the Accuracy+ Patch.\nCheck the game out!",		'https://quavergame.com',				'37A6C3'],
+			['Last Quarter Studios','misc/lqd',			"Owner of the Cats are Liquid game series.",					'https://twitter.com/lastquarterdev',	'FFA756'],
+			[''],
 			['OS Engine Team'],
-			['notweuz_', 'weuz', 'Main Programmer of OS Engine', 'https://twitter.com/notweuz_', '8633F2'],
-			['nelifs', 'nelifs', 'Second Programmer and Designer of OS Engine', 'https://github.com/nelifs', '1C1C1C'],
-			['Cooljer', 'cooljer', 'Main Artist of OS Engine', 'https://twitter.com/cooljer_', '3360F2'],
+			['notweuz_', 			'weuz', 			'Main Programmer of OS Engine', 								'https://twitter.com/notweuz_', 		'8633F2'],
+			['nelifs', 				'nelifs', 			'Second Programmer and Designer of OS Engine', 					'https://github.com/nelifs', 			'1C1C1C'],
+			['Cooljer',				 'cooljer', 		'Main Artist of OS Engine', 									'https://twitter.com/cooljer_', 		'3360F2'],
 			[''],
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',								'https://twitter.com/Shadow_Mario_',	'444444'],

@@ -87,7 +87,7 @@ class Note extends FlxSprite
 	public var hitHealth:Float = 0.023;
 	public var missHealth:Float = 0.0475;
 	public var rating:String = 'unknown';
-	public var ratingMod:Float = 0; //9 = unknown, 0.25 = shit, 0.5 = bad, 0.75 = good, 1 = sick
+	public var ratingMod:Float = 0; //idk what the hell is this
 	public var ratingDisabled:Bool = false;
 
 	public var texture(default, set):String = null;
@@ -316,12 +316,23 @@ class Note extends FlxSprite
 			if(skin == null || skin.length < 1) {
 				skin = 'NOTE_assets';
 				if (prefix == '') {
-					if(ClientPrefs.noteSkinSettings == 'Clasic') {
-						skin = 'NOTE_assets';
-					} else if (ClientPrefs.noteSkinSettings == 'Circle') {
-						skin = 'NOTE_assets_circle';
-					} else {
-						skin = 'NOTE_assets';// for preventing crashes
+					switch (ClientPrefs.noteSkinSettings) {
+						case 'Classic':
+							skin = 'NOTE_assets';
+						case 'Circle':
+							skin = 'NOTE_assets_circle';
+						case 'StepMania (Default)':
+							skin = 'NOTE_assets_stepmania';
+						case 'Quaver (Arrow)':
+							skin = 'NOTE_assets_quaver';
+						case 'In The Groove':
+							skin = 'NOTE_assets_inthegroove';
+						case 'Stepmania 5 (Etterna)':
+							skin = 'NOTE_assets_sm5';
+						case "CL's Project Mania":
+							skin = 'NOTE_assets_projmania';
+						default:
+							skin = 'NOTE_assets'; // for preventing crashes
 					}
 				}
 			}
@@ -330,6 +341,8 @@ class Note extends FlxSprite
 		if (charSkin != null && (prefix == '')) {
 			skin = charSkin;
 		}
+
+		if (Paths.image(skin) == null) skin = 'NOTE_assets'; //in case a skin doesnt exist
 
 		var animName:String = null;
 		if(animation.curAnim != null) {
@@ -342,6 +355,9 @@ class Note extends FlxSprite
 		var lastScaleY:Float = scale.y;
 		var blahblah:String = arraySkin.join('/');
 		if(PlayState.isPixelStage) {
+
+			if (Paths.image('pixelUI/' + blahblah) == null || Paths.image('pixelUI/' + blahblah + 'ENDS') == null) blahblah = 'NOTE_assets'; //cuz im stupid and dont have pixel versions of the new skins
+
 			if(isSustainNote) {
 				loadGraphic(Paths.image('pixelUI/' + blahblah + 'ENDS'));
 				width = width / 4;
@@ -371,6 +387,7 @@ class Note extends FlxSprite
 				}*/
 			}
 		} else {
+			if (Paths.image(blahblah) == null) blahblah = 'NOTE_assets'; //in case a skin doesnt exist
 			frames = Paths.getSparrowAtlas(blahblah);
 			loadNoteAnims();
 			antialiasing = ClientPrefs.globalAntialiasing;
@@ -471,5 +488,7 @@ class Note extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+
+		this.visible = !(ClientPrefs.getGameplaySetting('invis', false));
 	}
 }

@@ -88,6 +88,9 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		var option:GameplayOption = new GameplayOption('Practice Mode', 'practice', 'bool', false);
 		optionsArray.push(option);
 
+		var option:GameplayOption = new GameplayOption('Performance Mode (Invisible)', 'invis', 'bool', false);
+		optionsArray.push(option);
+
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
 		optionsArray.push(option);
 
@@ -95,6 +98,9 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Note Shuffle (Randomized)', 'randomcharts', 'bool', false);
+		optionsArray.push(option);
+
+		var option:GameplayOption = new GameplayOption('Drunk Mode', 'awkinahsjkladfcilnhbwal', 'bool', false);
 		optionsArray.push(option);
 	}
 

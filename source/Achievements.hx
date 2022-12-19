@@ -11,26 +11,28 @@ using StringTools;
 
 class Achievements {
 	public static var achievementsStuff:Array<Dynamic> = [ //Name, Description, Achievement save tag, Hidden achievement
-		["Freaky on a Friday Night",	"Play on a Friday... Night.",						'friday_night_play',	 true],
-		["She Calls Me Daddy Too",		"Beat Week 1 on Hard with no Misses.",				'week1_nomiss',			false],
-		["No More Tricks",				"Beat Week 2 on Hard with no Misses.",				'week2_nomiss',			false],
-		["Call Me The Hitman",			"Beat Week 3 on Hard with no Misses.",				'week3_nomiss',			false],
-		["Lady Killer",					"Beat Week 4 on Hard with no Misses.",				'week4_nomiss',			false],
-		["Missless Christmas",			"Beat Week 5 on Hard with no Misses.",				'week5_nomiss',			false],
-		["Highscore!!",					"Beat Week 6 on Hard with no Misses.",				'week6_nomiss',			false],
-		["God Effing Damn It!",			"Beat Week 7 on Hard with no Misses.",				'week7_nomiss',			false],
-		["What a Funkin' Disaster!",	"Complete a Song with a rating lower than 20%.",	'ur_bad',				false],
-		["Perfectionist",				"Complete a Song with a rating of 100%.",			'ur_good',				false],
-		["Roadkill Enthusiast",			"Watch the Henchmen die over 100 times.",			'roadkill_enthusiast',	false],
-		["Oversinging Much...?",		"Hold down a note for 10 seconds.",					'oversinging',			false],
-		["Hyperactive",					"Finish a Song without going Idle.",				'hype',					false],
-		["Just the Two of Us",			"Finish a Song pressing only two keys.",			'two_keys',				false],
-		["Toaster Gamer",				"Have you tried to run the game on a toaster?",		'toastie',				false],
-		["Debugger",					"Beat the \"Test\" Stage from the Chart Editor.",	'debugger',				 true]
+		["Freaky on a Friday Night",	"Play on a Friday... Night.",						'friday_night_play',	 null, 			true], //i
+		["Consolation Prize",			"Well, it could be worse.",							'get_better',			null,			false],//changed name
+		["Stumbler",					"No regrets.",										'stumbled',				null, 			true],//new
+		["Perfectionist",				"Accept nothing but the best.",						'perfectionist',		null,			false],//new i 
+		["Absolutely Marvelous",		"Accuracy is really underrated.",					'marvelous',			null,			false],//changed name i
+		["Hyperactive",					"Can you still sing after that?",					'hype',					null, 			false],// i
+		["The Sum of All Fears",		"Unfortunate.",										'unfortunate',			null,			true],//new i
+		["500 Combo",			 		"Achieve a 500 combo on any song.",					'1h-k',					null,			false],//new i
+		["750 Combo",					"Achieve a 750 combo on any song.",					'3q-k',					null, 			false],//new i
+		["1000 Combo", 					"Achieve a 1000 combo on any song.",				'1-k',					null,			false],//new i
+		["2000 Combo",					"Achieve a 2000 combo on any song.",				'2-k',					null, 			false],//new i
+		["Just the Two of Us",			"We can make it if we try...",						'two_keys',				null,			false],// i
+		["Starvelous",					"What is accuracy? I only hit notes!",				'no_marv',				null,			false],//new i
+		["Equilibrium",					"Balance in all things.",							'equality',				null,			true],//new i
+		["Prepared",					"Do it for real next time.",						'prepared',				null, 			false],//new i
+		["Finger Breaker",				"you. can. never. have. enough. score.",			'10m_score',			null,			false],//new
+		["It's a secret...",			"DDR4?",											'password',				null,			false],//new i
 	];
 	public static var achievementsMap:Map<String, Bool> = new Map<String, Bool>();
 
 	public static var henchmenDeath:Int = 0;
+	public static var totalScore:Int = 0;
 	public static function unlockAchievement(name:String):Void {
 		FlxG.log.add('Completed achievement "' + name +'"');
 		achievementsMap.set(name, true);
@@ -60,6 +62,9 @@ class Achievements {
 			}
 			if(henchmenDeath == 0 && FlxG.save.data.henchmenDeath != null) {
 				henchmenDeath = FlxG.save.data.henchmenDeath;
+			}
+			if(totalScore == 0 && FlxG.save.data.totalScore != null) {
+				totalScore = FlxG.save.data.totalScore;
 			}
 		}
 	}

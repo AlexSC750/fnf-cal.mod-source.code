@@ -191,12 +191,20 @@ class PlayState extends MusicBeatState
 
 	public var ratingsData:Array<Rating> = [];
 	public var marvs:Int = 0;
+	public var marvDisplay:FlxText;
 	public var perfs:Int = 0;
+	public var perfDisplay:FlxText;
 	public var greats:Int = 0;
+	public var greatDisplay:FlxText;
 	public var goods:Int = 0;
+	public var goodDisplay:FlxText;
 	public var oks:Int = 0;
+	public var okDisplay:FlxText;
 	public var bads:Int = 0;
-	private var hitArray:Array<Null<Int>> = [];
+	public var badDisplay:FlxText;
+	public var missDisplay:FlxText;
+	public var judgeCountGroup:FlxSpriteGroup;
+	public var judgeDisplayGroup:FlxSpriteGroup;
 
 	private var generatedMusic:Bool = false;
 	public var endingSong:Bool = false;
@@ -214,6 +222,9 @@ class PlayState extends MusicBeatState
 	public var invis:Bool = false;
 	public var mirrorMode:Bool = false;
 	public var randomize:Bool = false;
+	public var drunk:Bool = false;
+
+	private var drCheck:Bool = false;
 
 	public var displaysine:Float = 0;
 	public var textDisplay:FlxText;
@@ -360,13 +371,20 @@ class PlayState extends MusicBeatState
 			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_right'))
 		];
 
-		//Ratings
+		judgeCountGroup = new FlxSpriteGroup(0,50,7);
+		judgeDisplayGroup = new FlxSpriteGroup(20,75,7);
+
+		//region { Ratings
 			var rating:Rating = new Rating('marv');
 			rating.ratingMod = 1;
 			rating.score = 350;
 			rating.noteSplash = true;
 			rating.hpMod = 1;
 			ratingsData.push(rating);
+
+			var deco:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.image('judgecounters/marvOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
 
 			var rating:Rating = new Rating('perf');
 			rating.ratingMod = 0.9825;
@@ -375,12 +393,20 @@ class PlayState extends MusicBeatState
 			rating.noteSplash = true;
 			ratingsData.push(rating);
 
+			var deco:FlxSprite = new FlxSprite(0,60).loadGraphic(Paths.image('judgecounters/perfOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
+
 			var rating:Rating = new Rating('great');
 			rating.ratingMod = 0.65;
 			rating.hpMod = 0.25;
 			rating.score = 200;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
+
+			var deco:FlxSprite = new FlxSprite(0,120).loadGraphic(Paths.image('judgecounters/greatOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
 
 			var rating:Rating = new Rating('good');
 			rating.ratingMod = 0.25;
@@ -389,6 +415,10 @@ class PlayState extends MusicBeatState
 			rating.noteSplash = false;
 			ratingsData.push(rating);
 
+			var deco:FlxSprite = new FlxSprite(0,180).loadGraphic(Paths.image('judgecounters/goodOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
+
 			var rating:Rating = new Rating('ok');
 			rating.ratingMod = -1;
 			rating.hpMod = -1;
@@ -396,13 +426,25 @@ class PlayState extends MusicBeatState
 			rating.noteSplash = false;
 			ratingsData.push(rating);
 
+			var deco:FlxSprite = new FlxSprite(0,240).loadGraphic(Paths.image('judgecounters/okOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
+
 			var rating:Rating = new Rating('bad');
 			rating.ratingMod = -0.5;
 			rating.hpMod = -1;
-			rating.score = 0;
+			rating.score = -10;
 			rating.noteSplash = false;
 			ratingsData.push(rating);
-		//end ratings
+
+			var deco:FlxSprite = new FlxSprite(0,300).loadGraphic(Paths.image('judgecounters/badOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
+
+			var deco:FlxSprite = new FlxSprite(0,360).loadGraphic(Paths.image('judgecounters/missOverlay'));
+			deco.alpha = 0.5;
+			judgeCountGroup.add(deco);
+		//endregion
 
 		// For the "Just the Two of Us" achievement
 		for (i in 0...keysArray.length)
@@ -422,6 +464,7 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 		mirrorMode = ClientPrefs.getGameplaySetting('mirrorcharts', false);
 		randomize = ClientPrefs.getGameplaySetting('randomcharts', false);
+		drunk = ClientPrefs.getGameplaySetting('awkinahsjkladfcilnhbwal', false);
 
 		updateDisplayText();
 
@@ -1305,7 +1348,7 @@ class PlayState extends MusicBeatState
 		reloadHealthBarColors();
 
 		scoreTxt = new FlxText(0, healthBarBG.y + 28, FlxG.width, "", 16);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, drunk ? FlxColor.LIME : FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreTxt.scrollFactor.set();
 		scoreTxt.borderSize = 1.2;
 		if (!ClientPrefs.hideScoreText && !ClientPrefs.hideHud) {
@@ -1316,7 +1359,7 @@ class PlayState extends MusicBeatState
 		add(scoreTxt);
 
 		songTxt = new FlxText(12, FlxG.height - 24, 0, "", 8);
-		songTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		songTxt.setFormat(Paths.font("vcr.ttf"), 16, drunk ? FlxColor.LIME : FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songTxt.scrollFactor.set();
 		songTxt.borderSize = 1;
 		if (!ClientPrefs.hideWatermark && !ClientPrefs.hideHud) {
@@ -1338,13 +1381,38 @@ class PlayState extends MusicBeatState
 		}
 
 		commentTxt = new FlxText(0, FlxG.height - 24, FlxG.width, SONG.customMessage, 16);
-		commentTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		commentTxt.setFormat(Paths.font("vcr.ttf"), 16, drunk ? FlxColor.LIME : FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		commentTxt.scrollFactor.set();
 		commentTxt.borderSize = 1.25;
 		commentTxt.alpha = 0.5;
 		add(commentTxt);
 		commentTxt.x = (FlxG.width - commentTxt.width) - 16;
 
+		marvDisplay = new FlxText(0,0,0,'MV', 20);
+		judgeDisplayGroup.add(marvDisplay);
+		perfDisplay = new FlxText(0,60,0,'PF', 20);
+		judgeDisplayGroup.add(perfDisplay);
+		greatDisplay = new FlxText(0,120,0,'GR', 20);
+		judgeDisplayGroup.add(greatDisplay);
+		goodDisplay = new FlxText(0,180,0,'GD', 20);
+		judgeDisplayGroup.add(goodDisplay);
+		okDisplay = new FlxText(0,240,0,'OK', 20);
+		judgeDisplayGroup.add(okDisplay);
+		badDisplay = new FlxText(0,300,0,'BD', 20);
+		judgeDisplayGroup.add(badDisplay);
+		missDisplay = new FlxText(0,360,0,'MS', 20);
+		judgeDisplayGroup.add(missDisplay);
+
+		for (x in judgeDisplayGroup.group) {
+			x.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		}
+
+		judgeDisplayGroup.forEach()
+
+		add(judgeDisplayGroup);
+		add(judgeCountGroup);
+
+		judgeCountGroup.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
@@ -4211,8 +4279,6 @@ class PlayState extends MusicBeatState
 		deathCounter = 0;
 		seenCutscene = false;
 
-		Achievements.totalScore += songScore;
-		FlxG.save.data.totalScore = Achievements.totalScore;
 		FlxG.save.flush();
 
 		#if ACHIEVEMENTS_ALLOWED
@@ -4265,12 +4331,18 @@ class PlayState extends MusicBeatState
 					MusicBeatState.switchState(new StoryMenuState());
 
 					// if ()
-					if(!ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false)) {
+					if(!ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false) && !ClientPrefs.getGameplaySetting('awkinahsjkladfcilnhbwal', false)) {
 						StoryMenuState.weekCompleted.set(WeekData.weeksList[storyWeek], true);
 
 						if (SONG.validScore)
 						{
-							Highscore.saveWeekScore(WeekData.getWeekFileName(), campaignScore, storyDifficulty);
+							var hitwinlist:Array<String> = ['Peaceful', 'Lenient', 'Chill', 'Standard*', 'Tough', 'Extreme', 'Impossible', 'JUSTICE'];
+
+							if (hitwinlist.indexOf(ClientPrefs.hitWindowPreset) >= 3) { //screw you
+								Highscore.saveWeekScore(WeekData.getWeekFileName(), campaignScore, storyDifficulty);
+								Achievements.totalScore += songScore;
+								FlxG.save.data.totalScore = Achievements.totalScore;
+							}
 						}
 
 						FlxG.save.data.weekCompleted = StoryMenuState.weekCompleted;
@@ -4371,6 +4443,21 @@ class PlayState extends MusicBeatState
 	public var showComboNum:Bool = true;
 	public var showRating:Bool = true;
 
+
+	public function flashJudgeOverlay(rating:Rating = null, isMiss:Bool = false)
+	{
+		var alphaTween:FlxTween;
+		var index:Array<String> = ['marv', 'perf', 'great', 'good', 'ok', 'bad'];
+
+		if (isMiss) {
+			judgeCountGroup.members[6].alpha = 1.0;
+			alphaTween = FlxTween.tween(judgeCountGroup.members[6], {alpha: 0.5}, 0.2);
+		} else {
+			judgeCountGroup.members[index.indexOf(rating.name)].alpha = 1.0;
+			alphaTween = FlxTween.tween(judgeCountGroup.members[index.indexOf(rating.name)], {alpha: 0.5}, 0.2);
+		}
+	}
+
 	private function popUpScore(note:Note = null):Void
 	{
 		var noteDiff:Float = Math.abs(note.strumTime - Conductor.songPosition + ClientPrefs.ratingOffset);
@@ -4427,6 +4514,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
+		flashJudgeOverlay(daRating, false);
+
 		var pixelShitPart1:String = "qv/";
 		var pixelShitPart2:String = '-qv';
 
@@ -4478,7 +4567,7 @@ class PlayState extends MusicBeatState
 		comboSpr.updateHitbox();
 		rating.updateHitbox();
 
-		health += daRating.hpMod * note.hitHealth * healthGain;
+		if (!ClientPrefs.getGameplaySetting('botplay', false)) health += daRating.hpMod * note.hitHealth * healthGain;
 
 		var seperatedScore:Array<Int> = [];
 
@@ -4571,7 +4660,8 @@ class PlayState extends MusicBeatState
 		var key:Int = getKeyFromEvent(eventKey);
 		//trace('Pressed: ' + eventKey);
 
-		if (!cpuControlled && startedCountdown && !paused && key > -1 && (FlxG.keys.checkStatus(eventKey, JUST_PRESSED) || ClientPrefs.controllerMode))
+		if (!cpuControlled && startedCountdown && !paused && key > -1 && 
+			((drCheck) ? (FlxG.keys.checkStatus(eventKey, JUST_RELEASED)) : ((FlxG.keys.checkStatus(eventKey, JUST_PRESSED))) || ClientPrefs.controllerMode))
 		{
 			if(!boyfriend.stunned && generatedMusic && !endingSong)
 			{
@@ -4585,7 +4675,6 @@ class PlayState extends MusicBeatState
 				var pressNotes:Array<Note> = [];
 				//var notesDatas:Array<Int> = [];
 				var notesStopped:Bool = false;
-
 				var sortedNotesList:Array<Note> = [];
 				notes.forEachAlive(function(daNote:Note)
 				{
@@ -4627,7 +4716,7 @@ class PlayState extends MusicBeatState
 				}
 				else{
 					callOnLuas('onGhostTap', [key]);
-					if (canMiss) {
+					if (canMiss && !drCheck) { // should prob not kill u if u released on nothing with drunk mode
 						noteMissPress(key);
 						callOnHScripts('noteMissPress', [key]);
 					}
@@ -4644,13 +4733,22 @@ class PlayState extends MusicBeatState
 			}
 
 			var spr:StrumNote = playerStrums.members[key];
-			if(spr != null && spr.animation.curAnim.name != 'confirm')
+			if(spr != null)
 			{
-				spr.playAnim('pressed');
-				spr.resetAnim = 0;
+				if (spr.animation.curAnim.name != 'confirm') {
+					spr.playAnim('pressed');
+					spr.resetAnim = 0;
+				} else if (drCheck) {
+					spr.playAnim('static');
+					spr.resetAnim = 0;
+				}
 			}
-			callOnLuas('onKeyPress', [key]);
-			callOnHScripts('onKeyPress', [key]);
+
+			if (!drCheck) {
+				callOnLuas('onKeyPress', [key]);
+				callOnHScripts('onKeyPress', [key]);
+			}
+			drCheck = false;
 		}
 		//trace('pressed: ' + controlArray);
 	}
@@ -4678,6 +4776,10 @@ class PlayState extends MusicBeatState
 				spr.resetAnim = 0;
 			}
 			callOnLuas('onKeyRelease', [key]);
+		}
+		if (drunk) {
+			drCheck = true;
+			onKeyPress(event);
 		}
 		//trace('released: ' + controlArray);
 	}
@@ -4804,6 +4906,8 @@ class PlayState extends MusicBeatState
 
 		totalPlayed++;
 		recalculateRating(true);
+
+		flashJudgeOverlay(null, true);
 
 		var char:Character = boyfriend;
 		if(daNote.gfNote) {
@@ -4998,19 +5102,6 @@ class PlayState extends MusicBeatState
 				popUpScore(note);
 			}
 
-			#if ACHIEVEMENTS_ALLOWED
-			if(achievementObj != null) {
-				return;
-			} else {
-				var achieve:String = checkForAchievement(['1h-k', '3q-k', '1-k', '2-k']);
-	
-				if(achieve != null) {
-					startAchievement(achieve);
-					return;
-				}
-			}
-			#end
-
 			if(!note.noAnimation) {
 				var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 
@@ -5092,6 +5183,15 @@ class PlayState extends MusicBeatState
 				notes.remove(note, true);
 				note.destroy();
 			}
+
+			#if ACHIEVEMENTS_ALLOWED
+			if(achievementObj == null) {
+				var achieve:String = checkForAchievement(['1h-k', '3q-k', '1-k', '2-k']);
+				if(achieve != null) {
+					startAchievement(achieve);
+				}
+			}
+			#end
 		}
 	}
 
@@ -5697,6 +5797,7 @@ class PlayState extends MusicBeatState
 		if(instakillOnMiss && displayQueue.indexOf('No Miss') == -1) displayQueue.push("No Miss");
 		if(mirrorMode && displayQueue.indexOf('Mirror Mode') == -1) displayQueue.push("Mirror Mode");
 		if(randomize && displayQueue.indexOf('Note Shuffle') == -1) displayQueue.push("Note Shuffle");
+		if(drunk && displayQueue.indexOf('Drunk Mode') == -1) displayQueue.push('Drunk Mode');
 	}
 	var curLight:Int = -1;
 	var curLightEvent:Int = -1;

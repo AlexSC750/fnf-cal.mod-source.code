@@ -49,12 +49,23 @@ class StrumNote extends FlxSprite
 
 		var skin:String = 'NOTE_assets';
 		if (PlayState.SONG.arrowSkin == null || PlayState.SONG.arrowSkin.length <= 1) {
-			if(ClientPrefs.noteSkinSettings == 'Clasic') {
-				skin = 'NOTE_assets';
-			} else if (ClientPrefs.noteSkinSettings == 'Circle') {
-				skin = 'NOTE_assets_circle';
-			} else {
-				skin = 'NOTE_assets';// for preventing crashes
+			switch (ClientPrefs.noteSkinSettings) {
+				case 'Classic':
+					skin = 'NOTE_assets';
+				case 'Circle':
+					skin = 'NOTE_assets_circle';
+				case 'StepMania (Default)':
+					skin = 'NOTE_assets_stepmania';
+				case 'Quaver (Arrow)':
+					skin = 'NOTE_assets_quaver';
+				case 'In The Groove':
+					skin = 'NOTE_assets_inthegroove';
+				case 'Stepmania 5 (Etterna)':
+					skin = 'NOTE_assets_sm5';
+				case "CL's Project Mania":
+					skin = 'NOTE_assets_projmania';
+				default:
+					skin = 'NOTE_assets'; // for preventing crashes
 			}
 		}
 		if (PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
@@ -70,6 +81,7 @@ class StrumNote extends FlxSprite
 			}
 		}
 		#end
+		if (Paths.image(skin) == null) skin = 'NOTE_assets'; //in case a skin doesnt exist
 		//trace(PlayState.SONG.arrowSkin); мама я в ютубе
 		texture = skin; //Load texture and anims
 
@@ -83,6 +95,8 @@ class StrumNote extends FlxSprite
 
 		if(PlayState.isPixelStage)
 		{
+			if (Paths.image('pixelUI/' + texture ) == null) texture = 'NOTE_assets'; //cuz im stupid and dont have pixel versions of the new skins
+
 			loadGraphic(Paths.image('pixelUI/' + texture));
 			width = width / 4;
 			height = height / 5;
@@ -117,6 +131,7 @@ class StrumNote extends FlxSprite
 		}
 		else
 		{
+			if (Paths.image(texture) == null) texture = 'NOTE_assets'; //in case a skin doesnt exist
 			frames = Paths.getSparrowAtlas(texture);
 			animation.addByPrefix('green', 'arrowUP');
 			animation.addByPrefix('blue', 'arrowDOWN');

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu.png">
+	<SubTexture name="idle" x="13" y="13" width="224" height="224"/>
+
+	<SubTexture name="selecting0000" x="263" y="13" width="224" height="224"/>
+	<SubTexture name="selecting0001" x="513" y="13" width="224" height="224"/>
+	<SubTexture name="selecting0002" x="13" y="263" width="224" height="224"/>
+	<SubTexture name="selecting0003" x="263" y="263" width="224" height="224"/>
+	<SubTexture name="selecting0004" x="513" y="263" width="224" height="224"/>
+	<SubTexture name="selecting0005" x="13" y="513" width="224" height="224"/>
+	<SubTexture name="selecting0006" x="263" y="513" width="224" height="224"/>
+
+	<SubTexture name="deselecting0000" x="263" y="513" width="224" height="224"/>
+	<SubTexture name="deselecting0001" x="13" y="513" width="224" height="224"/>
+	<SubTexture name="deselecting0002" x="513" y="263" width="224" height="224"/>
+	<SubTexture name="deselecting0003" x="263" y="263" width="224" height="224"/>
+	<SubTexture name="deselecting0004" x="13" y="263" width="224" height="224"/>
+	<SubTexture name="deselecting0005" x="513" y="13" width="224" height="224"/>
+	<SubTexture name="deselecting0006" x="263" y="13" width="224" height="224"/>
+
+	<SubTexture name="selected" x="513" y="513" width="224" height="224"/>
+</TextureAtlas>

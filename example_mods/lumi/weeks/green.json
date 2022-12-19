@@ -1,0 +1,41 @@
+{
+	"songs": [
+		[
+			"Serendipity",
+			"green",
+			[
+				53,
+				146,
+				53
+			]
+		],
+		[
+			"Breezing Through",
+			"green",
+			[
+				53,
+				146,
+				53
+			]
+		]
+	],
+	"hiddenUntilUnlocked": false,
+	"hideFreeplay": false,
+	"weekBackground": "",
+	"difficulties": "Normal, Hard, Insane, Solo",
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
+	"storyName": "songs for green",
+	"weekName": "Green",
+	"freeplayColor": [
+		146,
+		113,
+		253
+	],
+	"hideStoryMode": true,
+	"weekBefore": "tutorial",
+	"startUnlocked": true
+}

@@ -1,0 +1,50 @@
+{
+	"storyName": "More songs",
+	"difficulties": "Normal, Hard, Insane, Solo",
+	"hideFreeplay": false,
+	"weekBackground": "",
+	"weekBefore": "tutorial",
+	"freeplayColor": [
+		146,
+		113,
+		253
+	],
+	"startUnlocked": true,
+	"hideStoryMode": true,
+	"songs": [
+		[
+			"Gapple",
+			"lqd",
+			[
+				186,
+				100,
+				75
+			]
+		],
+		[
+			"Triple Trouble",
+			"tt",
+			[
+				0,
+				0,
+				0
+			]
+		],
+		[
+			"Space Breaker",
+			"purple",
+			[
+				16,
+				4,
+				36
+			]
+		]
+	],
+	"weekCharacters": [
+		"",
+		"",
+		""
+	],
+	"hiddenUntilUnlocked": false,
+	"weekName": "another"
+}

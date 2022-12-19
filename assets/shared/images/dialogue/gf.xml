@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="gf.png">
+    <SubTexture name="idle" x="0" y="0" width="300" height="300"/>
+    <SubTexture name="dissapointed" x="300" y="0" width="300" height="300"/>
+    <SubTexture name="blush" x="600" y="0" width="300" height="300"/>
+    <SubTexture name="cry" x="900" y="0" width="300" height="300"/>
+    <SubTexture name="yay" x="1200" y="0" width="300" height="300"/>
+</TextureAtlas>

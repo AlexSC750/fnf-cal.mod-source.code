@@ -1,0 +1,1 @@
+lua script that works everywhere if the mod is loaded

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="NOTE_assets_sm5.png">
+	<!-- Created with GIMP 2.10.30 and a random skin from Quaver-->
+	<!-- https://www.gimp.org/ -->
+	<SubTexture name="arrowLEFT0000" x="0" y="160" width="160" height="160"/>
+	<SubTexture name="left press0000" x="0" y="320" width="160" height="160"/>
+	<SubTexture name="left confirm0000" x="0" y="480" width="182" height="182"/>
+	<SubTexture name="left confirm0001" x="182" y="480" width="182" height="182"/>
+	<SubTexture name="left confirm0002" x="365" y="480" width="182" height="182"/>
+	<SubTexture name="left confirm0003" x="0" y="320" width="160" height="160" frameX="-11" frameY="-11" frameWidth="182" frameHeight="182"/>
+	<SubTexture name="purple0000" x="0" y="0" width="160" height="160"/>
+	<SubTexture name="purple hold piece0000" x="648" y="0" width="114" height="44"/>
+	<SubTexture name="pruple end hold0000" x="648" y="72" width="114" height="74"/>
+	<!--w h y   i s   t h e   p u r p l e   e n d   m i s p e l l e d-->
+
+	<SubTexture name="arrowDOWN0000" x="160" y="160" width="160" height="160"/>
+	<SubTexture name="down press0000" x="160" y="320" width="160" height="160"/>
+	<SubTexture name="down confirm0000" x="0" y="663" width="182" height="182"/>
+	<SubTexture name="down confirm0001" x="182" y="663" width="182" height="182"/>
+	<SubTexture name="down confirm0002" x="365" y="663" width="182" height="182"/>
+	<SubTexture name="down confirm0003" x="160" y="320" width="160" height="160" frameX="-11" frameY="-11" frameWidth="182" frameHeight="182"/>
+	<SubTexture name="blue0000" x="160" y="0" width="160" height="160"/>
+	<SubTexture name="blue hold piece0000" x="648" y="0" width="114" height="44"/>
+	<SubTexture name="blue hold end0000" x="648" y="72" width="114" height="74"/>
+
+	<SubTexture name="arrowUP0000" x="320" y="160" width="160" height="160"/>
+	<SubTexture name="up press0000" x="320" y="320" width="160" height="160"/>
+	<SubTexture name="up confirm0000" x="0" y="845" width="182" height="182"/>
+	<SubTexture name="up confirm0001" x="182" y="845" width="182" height="182"/>
+	<SubTexture name="up confirm0002" x="365" y="845" width="182" height="182"/>
+	<SubTexture name="up confirm0003" x="320" y="320" width="160" height="160" frameX="-11" frameY="-11" frameWidth="182" frameHeight="182"/>
+	<SubTexture name="green0000" x="320" y="0" width="160" height="160"/>
+	<SubTexture name="green hold piece0000" x="648" y="0" width="114" height="44"/>
+	<SubTexture name="green hold end0000" x="648" y="72" width="114" height="74"/>
+
+	<SubTexture name="arrowRIGHT0000" x="480" y="160" width="160" height="160"/>
+	<SubTexture name="right press0000" x="480" y="320" width="160" height="160"/>
+	<SubTexture name="right confirm0000" x="0" y="1028" width="182" height="182"/>
+	<SubTexture name="right confirm0001" x="182" y="1028" width="182" height="182"/>
+	<SubTexture name="right confirm0002" x="365" y="1028" width="182" height="182"/>
+	<SubTexture name="right confirm0003" x="480" y="320" width="160" height="160" frameX="-11" frameY="-11" frameWidth="182" frameHeight="182"/>
+	<SubTexture name="red0000" x="480" y="0" width="160" height="160"/>
+	<SubTexture name="red hold piece0000" x="648" y="0" width="114" height="44"/>
+	<SubTexture name="red hold end0000" x="648" y="72" width="114" height="74"/>
+</TextureAtlas>

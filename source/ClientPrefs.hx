@@ -51,6 +51,7 @@ class ClientPrefs {
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
+		// { region scrolltype comments
 		// anyone reading this, amod is multiplicative speed mod, cmod is constant speed mod, and xmod is bpm based speed mod.
 		// an amod example would be chartSpeed * multiplier
 		// cmod would just be constantSpeed = chartSpeed
@@ -60,14 +61,17 @@ class ClientPrefs {
 		// oh yeah and you'd have to actually convert the difference to seconds which I already do, because this is based on beats and stuff. but it should work
 		// just fine. but I wont implement it because I don't know how you handle sustains and other stuff like that.
 		// oh yeah when you calculate the bps divide it by the songSpeed or rate because it wont scroll correctly when speeds exist.
+		// endregion
 		'songspeed' => 1.0,
 		'healthgain' => 1.0,
 		'healthloss' => 1.0,
 		'instakill' => false,
 		'practice' => false,
+		'invis' => false,
 		'botplay' => false,
 		'mirrorcharts' => false,
-		'randomcharts' => false
+		'randomcharts' => false,
+		'awkinahsjkladfcilnhbwal' => false
 	];
 
 	public static var comboOffset:Array<Int> = [0, 0, 0, 0];
@@ -154,6 +158,7 @@ class ClientPrefs {
 		FlxG.save.data.comboOffset = comboOffset;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
+		FlxG.save.data.totalScore = Achievements.totalScore;
 		FlxG.save.data.autosaveInterval = autosaveInterval;
 		FlxG.save.data.autosavecharts = autosavecharts;
 		FlxG.save.data.themedmainmenubg = themedmainmenubg;

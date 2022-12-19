@@ -193,7 +193,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 			FlxG.sound.music.fadeIn(2, 0, 1);
 		}
 		
-		bgFade = new FlxSprite(-500, -500).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.WHITE);
+		bgFade = new FlxSprite(-500, -500).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		bgFade.scrollFactor.set();
 		bgFade.visible = true;
 		bgFade.alpha = 0;
@@ -202,8 +202,8 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		this.dialogueList = dialogueList;
 		spawnCharacters();
 
-		box = new FlxSprite(70, 370);
-		box.frames = Paths.getSparrowAtlas('speech_bubble');
+		box = new FlxSprite(70, 370).loadGraphic(Paths.image('dialogue-box'));
+/* 		box.frames = Paths.getSparrowAtlas('speech_bubble');
 		box.scrollFactor.set();
 		box.antialiasing = ClientPrefs.globalAntialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
@@ -215,8 +215,12 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		box.animation.addByPrefix('center-angry', 'AHH Speech Bubble middle', 24);
 		box.animation.addByPrefix('center-angryOpen', 'speech bubble Middle loud open', 24, false);
 		box.animation.play('normal', true);
-		box.visible = false;
-		box.setGraphicSize(Std.int(box.width * 0.9));
+		box.visible = false; */
+		box.screenCenter(X);
+		box.y = (ClientPrefs.downScroll) ? 20 : 370;
+		box.antialiasing = ClientPrefs.globalAntialiasing;
+		box.scrollFactor.set();
+		// box.setGraphicSize(Std.int(box.width * 0.9));
 		box.updateHitbox();
 		add(box);
 
@@ -228,7 +232,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 
 	public static var LEFT_CHAR_X:Float = -60;
 	public static var RIGHT_CHAR_X:Float = -100;
-	public static var DEFAULT_CHAR_Y:Float = 60;
+	public static var DEFAULT_CHAR_Y:Float = 120;
 
 	function spawnCharacters() {
 		#if (haxe >= "4.0.0")
@@ -276,8 +280,8 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		}
 	}
 
-	public static var DEFAULT_TEXT_X = 90;
-	public static var DEFAULT_TEXT_Y = 430;
+	public static var DEFAULT_TEXT_X = 60;
+	public static var DEFAULT_TEXT_Y = (ClientPrefs.downScroll) ? 30 : 430;
 	var scrollSpeed = 4500;
 	var daText:Alphabet = null;
 	var ignoreThisFrame:Bool = true; //First frame is reserved for loading dialogue images
@@ -290,8 +294,8 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		}
 
 		if(!dialogueEnded) {
-			bgFade.alpha += 0.5 * elapsed;
-			if(bgFade.alpha > 0.5) bgFade.alpha = 0.5;
+			bgFade.alpha += 0.25 * elapsed;
+			if(bgFade.alpha > 0.25) bgFade.alpha = 0.25;
 
 			if(PlayerSettings.player1.controls.ACCEPT) {
 				if(!daText.finishedText) {
@@ -301,7 +305,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 						remove(daText);
 						daText.destroy();
 					}
-					daText = new Alphabet(DEFAULT_TEXT_X, DEFAULT_TEXT_Y, textToType, false, true, 0.0, 0.7);
+					daText = new Alphabet(DEFAULT_TEXT_X, (ClientPrefs.downScroll) ? 30 : 430, textToType, false, true, 0.0, 0.7, true);
 					add(daText);
 					
 					if(skipDialogueThing != null) {
@@ -309,18 +313,6 @@ class DialogueBoxPsych extends FlxSpriteGroup
 					}
 				} else if(currentText >= dialogueList.dialogue.length) {
 					dialogueEnded = true;
-					for (i in 0...textBoxTypes.length) {
-						var checkArray:Array<String> = ['', 'center-'];
-						var animName:String = box.animation.curAnim.name;
-						for (j in 0...checkArray.length) {
-							if(animName == checkArray[j] + textBoxTypes[i] || animName == checkArray[j] + textBoxTypes[i] + 'Open') {
-								box.animation.play(checkArray[j] + textBoxTypes[i] + 'Open', true);
-							}
-						}
-					}
-
-					box.animation.curAnim.curFrame = box.animation.curAnim.frames.length - 1;
-					box.animation.curAnim.reverse();
 					daText.kill();
 					remove(daText);
 					daText.destroy();
@@ -341,19 +333,6 @@ class DialogueBoxPsych extends FlxSpriteGroup
 				if(char != null && char.animation.curAnim != null && char.animation.finished) {
 					char.animation.curAnim.restart();
 				}
-			}
-
-			if(box.animation.curAnim.finished) {
-				for (i in 0...textBoxTypes.length) {
-					var checkArray:Array<String> = ['', 'center-'];
-					var animName:String = box.animation.curAnim.name;
-					for (j in 0...checkArray.length) {
-						if(animName == checkArray[j] + textBoxTypes[i] || animName == checkArray[j] + textBoxTypes[i] + 'Open') {
-							box.animation.play(checkArray[j] + textBoxTypes[i], true);
-						}
-					}
-				}
-				updateBoxOffsets(box);
 			}
 
 			if(lastCharacter != -1 && arrayCharacters.length > 0) {
@@ -393,7 +372,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 				}
 			}
 		} else { //Dialogue ending
-			if(box != null && box.animation.curAnim.curFrame <= 0) {
+			if(box != null) {
 				box.kill();
 				remove(box);
 				box.destroy();
@@ -401,7 +380,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 			}
 
 			if(bgFade != null) {
-				bgFade.alpha -= 0.5 * elapsed;
+				bgFade.alpha -= 0.25 * elapsed;
 				if(bgFade.alpha <= 0) {
 					bgFade.kill();
 					remove(bgFade);
@@ -451,7 +430,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 			curDialogue = dialogueList.dialogue[currentText];
 		} while(curDialogue == null);
 
-		if(curDialogue.text == null || curDialogue.text.length < 1) curDialogue.text = ' ';
+		if(curDialogue.text == null || curDialogue.text.length < 1) curDialogue.text = '._.';
 		if(curDialogue.boxState == null) curDialogue.boxState = 'normal';
 		if(curDialogue.speed == null || Math.isNaN(curDialogue.speed)) curDialogue.speed = 0.05;
 
@@ -495,7 +474,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 
 		textToType = curDialogue.text;
 		Alphabet.setDialogueSound(curDialogue.sound);
-		daText = new Alphabet(DEFAULT_TEXT_X, DEFAULT_TEXT_Y, textToType, false, true, curDialogue.speed, 0.7);
+		daText = new Alphabet(DEFAULT_TEXT_X, (ClientPrefs.downScroll) ? 30 : 430, textToType, false, true, curDialogue.speed, 0.7, true);
 		add(daText);
 
 		var char:DialogueCharacter = arrayCharacters[character];
@@ -528,7 +507,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 	public static function updateBoxOffsets(box:FlxSprite) { //Had to make it static because of the editors
 		box.centerOffsets();
 		box.updateHitbox();
-		if(box.animation.curAnim.name.startsWith('angry')) {
+/* 		if(box.animation.curAnim.name.startsWith('angry')) {
 			box.offset.set(50, 65);
 		} else if(box.animation.curAnim.name.startsWith('center-angry')) {
 			box.offset.set(50, 30);
@@ -536,6 +515,6 @@ class DialogueBoxPsych extends FlxSpriteGroup
 			box.offset.set(10, 0);
 		}
 		
-		if(!box.flipX) box.offset.y += 10;
+		if(!box.flipX) box.offset.y += 10; */
 	}
 }

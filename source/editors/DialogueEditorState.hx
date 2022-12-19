@@ -19,6 +19,7 @@ import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 import openfl.net.FileReference;
 import openfl.events.Event;
@@ -68,16 +69,11 @@ class DialogueEditorState extends MusicBeatState
 		character.scrollFactor.set();
 		add(character);
 
-		box = new FlxSprite(70, 370);
-		box.frames = Paths.getSparrowAtlas('speech_bubble');
-		box.scrollFactor.set();
+		box = new FlxSprite(70, 370).loadGraphic(Paths.image('dialogue-box'));
+		box.screenCenter(X);
+		box.y = (ClientPrefs.downScroll) ? 20 : 370;
 		box.antialiasing = ClientPrefs.globalAntialiasing;
-		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
-		box.animation.addByPrefix('angry', 'AHH speech bubble', 24);
-		box.animation.addByPrefix('center', 'speech bubble middle', 24);
-		box.animation.addByPrefix('center-angry', 'AHH Speech Bubble middle', 24);
-		box.animation.play('normal', true);
-		box.setGraphicSize(Std.int(box.width * 0.9));
+		box.scrollFactor.set();
 		box.updateHitbox();
 		add(box);
 
@@ -119,7 +115,6 @@ class DialogueEditorState extends MusicBeatState
 
 	var characterInputText:FlxUIInputText;
 	var lineInputText:FlxUIInputText;
-	var angryCheckbox:FlxUICheckBox;
 	var speedStepper:FlxUINumericStepper;
 	var soundInputText:FlxUIInputText;
 	function addDialogueLineUI() {
@@ -130,13 +125,6 @@ class DialogueEditorState extends MusicBeatState
 		blockPressWhileTypingOn.push(characterInputText);
 
 		speedStepper = new FlxUINumericStepper(10, characterInputText.y + 40, 0.005, 0.05, 0, 0.5, 3);
-
-		angryCheckbox = new FlxUICheckBox(speedStepper.x + 120, speedStepper.y, null, null, "Angry Textbox", 200);
-		angryCheckbox.callback = function()
-		{
-			updateTextBox();
-			dialogueFile.dialogue[curSelected].boxState = (angryCheckbox.checked ? 'angry' : 'normal');
-		};
 
 		soundInputText = new FlxUIInputText(10, speedStepper.y + 40, 150, '', 8);
 		blockPressWhileTypingOn.push(soundInputText);
@@ -156,7 +144,6 @@ class DialogueEditorState extends MusicBeatState
 		tab_group.add(new FlxText(10, soundInputText.y - 18, 0, 'Sound file name:'));
 		tab_group.add(new FlxText(10, lineInputText.y - 18, 0, 'Text:'));
 		tab_group.add(characterInputText);
-		tab_group.add(angryCheckbox);
 		tab_group.add(speedStepper);
 		tab_group.add(soundInputText);
 		tab_group.add(lineInputText);
@@ -179,21 +166,10 @@ class DialogueEditorState extends MusicBeatState
 
 	function updateTextBox() {
 		box.flipX = false;
-		var isAngry:Bool = angryCheckbox.checked;
-		var anim:String = isAngry ? 'angry' : 'normal';
+		var anim:String = 'normal';
 
-		switch(character.jsonFile.dialogue_pos) {
-			case 'left':
-				box.flipX = true;
-			case 'center':
-				if(isAngry) {
-					anim = 'center-angry';
-				} else {
-					anim = 'center';
-				}
-		}
-		box.animation.play(anim, true);
-		DialogueBoxPsych.updateBoxOffsets(box);
+		// box.animation.play(anim, true);
+		// DialogueBoxPsych.updateBoxOffsets(box);
 	}
 
 	function reloadCharacter() {
@@ -242,7 +218,7 @@ class DialogueEditorState extends MusicBeatState
 		if(textToType == null || textToType.length < 1) textToType = ' ';
 	
 		Alphabet.setDialogueSound(soundInputText.text);
-		daText = new Alphabet(DialogueBoxPsych.DEFAULT_TEXT_X, DialogueBoxPsych.DEFAULT_TEXT_Y, textToType, false, true, speed, 0.7);
+		daText = new Alphabet(60, (ClientPrefs.downScroll) ? 30 : 430, textToType, false, true, speed, 0.7, true);
 		add(daText);
 
 		if(speed > 0) {
@@ -267,7 +243,6 @@ class DialogueEditorState extends MusicBeatState
 			{
 				character.reloadCharacterJson(characterInputText.text);
 				reloadCharacter();
-				updateTextBox();
 
 				if(character.jsonFile.animations.length > 0) {
 					curAnim = 0;
@@ -398,13 +373,11 @@ class DialogueEditorState extends MusicBeatState
 		var curDialogue:DialogueLine = dialogueFile.dialogue[curSelected];
 		characterInputText.text = curDialogue.portrait;
 		lineInputText.text = curDialogue.text;
-		angryCheckbox.checked = (curDialogue.boxState == 'angry');
 		speedStepper.value = curDialogue.speed;
 
 		curAnim = 0;
 		character.reloadCharacterJson(characterInputText.text);
 		reloadCharacter();
-		updateTextBox();
 		reloadText(curDialogue.speed);
 
 		var leLength:Int = character.jsonFile.animations.length;

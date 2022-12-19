@@ -155,7 +155,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		var option:Option = new Option('Hit Window Type',
-			'Changes the current hit window preset.\n(list of timings in timingwindowlist.txt)',
+			'Changes the current hit window preset.\n(list of timings in timingwindowlist.txt)\nNOTE: Using a preset below "Standard*" will stop score saving.',
 			'hitWindowPreset',
 			'string',
 			'Standard*',
