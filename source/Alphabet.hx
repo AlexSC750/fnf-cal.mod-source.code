@@ -258,7 +258,17 @@ class Alphabet extends FlxSpriteGroup
 			if(curRow == 2) y += LONG_TEXT_ADD;
 		}
 
-		if(loopNum <= splitWords.length && splitWords[loopNum] != null) {
+		if(splitWords[loopNum] == "[" && splitWords.indexOf(']', loopNum) != -1 && !(Math.isNaN(Std.parseFloat(text.substr(loopNum+1, splitWords.indexOf(']', loopNum)-1))))) // what the fuck???
+		{
+			loopNum += text.substr(loopNum+1, splitWords.indexOf(']', loopNum)-1).length -1;
+			if(tmr != null) {
+/* 				tmr.loops -= text.substr(loopNum, text.indexOf(']', loopNum)).length;
+				tmr.reset(Std.parseFloat(text.substr(loopNum+1, text.indexOf(']', loopNum)))); */
+				trace(text.substr(loopNum, splitWords.indexOf(']', loopNum)));
+				trace(text.substr(loopNum, splitWords.indexOf(']', loopNum)+1));
+			}
+		}
+		else if(loopNum <= splitWords.length && splitWords[loopNum] != null) {
 			var spaceChar:Bool = (splitWords[loopNum] == " " || (isBold && splitWords[loopNum] == "_"));
 			if (spaceChar)
 			{

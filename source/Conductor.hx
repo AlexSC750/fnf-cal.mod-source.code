@@ -165,13 +165,15 @@ class Rating
 	public var hpMod:Float = 0;
 	public var score:Int = 500;
 	public var noteSplash:Bool = true;
+	public var array:Array<String> = ['marv', 'perf', 'great', 'good', 'ok', 'bad'];
 
 	public function new(name:String)
 	{
 		this.name = name;
 		this.image = name;
 		this.counter = name + 's';
-		this.hitWindow = Reflect.field(ClientPrefs, name + 'Window');
+		/* this.hitWindow = Reflect.field(ClientPrefs, name + 'Window'); */
+		this.hitWindow = ClientPrefs.hitWindowMap[ClientPrefs.hitWindowPreset][array.indexOf(name)];
 		if(hitWindow == null)
 		{
 			hitWindow = 0;

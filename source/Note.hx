@@ -85,12 +85,13 @@ class Note extends FlxSprite
 	public var copyAlpha:Bool = true;
 
 	public var hitHealth:Float = 0.023;
-	public var missHealth:Float = 0.0475;
+	public var missHealth:Float = 0.07125; //0.0475
 	public var rating:String = 'unknown';
-	public var ratingMod:Float = 0; //idk what the hell is this
+	public var ratingMod:Float = 0;
 	public var ratingDisabled:Bool = false;
 
 	public var texture(default, set):String = null;
+	public var inverted:Bool = false;
 
 	public var noAnimation:Bool = false;
 	public var noMissAnimation:Bool = false;
@@ -98,6 +99,8 @@ class Note extends FlxSprite
 	public var distance:Float = 2000; //plan on doing scroll directions soon -bb
 
 	public var hitsoundDisabled:Bool = false;
+
+	private var isBlue:Bool = false;
 
 	private function set_multSpeed(value:Float):Float {
 		resizeByRatio(value / multSpeed);
@@ -135,7 +138,7 @@ class Note extends FlxSprite
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
 				case 'Hurt Note':
-					ignoreNote = mustPress;
+					ignoreNote = true;
 					reloadNote('HURT');
 					noteSplashTexture = 'HURTnoteSplashes';
 					colorSwap.hue = 0;
@@ -156,6 +159,13 @@ class Note extends FlxSprite
 					noMissAnimation = true;
 				case 'GF Sing':
 					gfNote = true;
+				// notes for the cats abilities
+				case 'Blue Note':
+					isBlue = true; // fuck off i had to make this var for the sole purpose that the note type updates too late
+					reloadNote();
+					colorSwap.hue = 0;
+					colorSwap.saturation = 0;
+					colorSwap.brightness = 0;
 			}
 			noteType = value;
 		}
@@ -316,24 +326,7 @@ class Note extends FlxSprite
 			if(skin == null || skin.length < 1) {
 				skin = 'NOTE_assets';
 				if (prefix == '') {
-					switch (ClientPrefs.noteSkinSettings) {
-						case 'Classic':
-							skin = 'NOTE_assets';
-						case 'Circle':
-							skin = 'NOTE_assets_circle';
-						case 'StepMania (Default)':
-							skin = 'NOTE_assets_stepmania';
-						case 'Quaver (Arrow)':
-							skin = 'NOTE_assets_quaver';
-						case 'In The Groove':
-							skin = 'NOTE_assets_inthegroove';
-						case 'Stepmania 5 (Etterna)':
-							skin = 'NOTE_assets_sm5';
-						case "CL's Project Mania":
-							skin = 'NOTE_assets_projmania';
-						default:
-							skin = 'NOTE_assets'; // for preventing crashes
-					}
+					skin = getNoteSkinImage(ClientPrefs.noteSkinSettings);
 				}
 			}
 		}
@@ -411,14 +404,15 @@ class Note extends FlxSprite
 	}
 
 	function loadNoteAnims() {
-		animation.addByPrefix('greenScroll', 'green0');
-		animation.addByPrefix('redScroll', 'red0');
-		animation.addByPrefix('blueScroll', 'blue0');
-		animation.addByPrefix('purpleScroll', 'purple0');
+		var dum:String = isBlue ? 'slow' : '';
+		animation.addByPrefix('greenScroll', 'green' + dum + '0');
+		animation.addByPrefix('redScroll', 'red' + dum + '0');
+		animation.addByPrefix('blueScroll', 'blue' + dum + '0');
+		animation.addByPrefix('purpleScroll', 'purple' + dum + '0');
 
 		if (isSustainNote)
 		{
-			animation.addByPrefix('purpleholdend', 'pruple end hold');
+			animation.addByPrefix('purpleholdend', 'pruple end hold'); // i hate you
 			animation.addByPrefix('greenholdend', 'green hold end');
 			animation.addByPrefix('redholdend', 'red hold end');
 			animation.addByPrefix('blueholdend', 'blue hold end');
@@ -489,6 +483,33 @@ class Note extends FlxSprite
 				alpha = 0.3;
 		}
 
-		this.visible = !(ClientPrefs.getGameplaySetting('invis', false));
+		this.visible = !(ClientPrefs.getGameplaySetting('invis', true));
+
+		if ((noteType == 'Blue Note') && (PlayState.instance != null)) { 
+			if (PlayState.instance.blueSpeedMod != multSpeed) set_multSpeed(PlayState.instance.blueSpeedMod);
+		}
+	}
+
+	public static function getNoteSkinImage(skinName:String) {
+		var skin:String = "";
+		switch (skinName) {
+			case 'Classic':
+				skin = 'NOTE_assets';
+			case 'Circle':
+				skin = 'NOTE_assets_circle';
+			case 'StepMania (Default)':
+				skin = 'NOTE_assets_stepmania';
+			case 'Quaver (Arrow)':
+				skin = 'NOTE_assets_quaver';
+			case 'In The Groove':
+				skin = 'NOTE_assets_inthegroove';
+			case 'StepMania 5 (Etterna)':
+				skin = 'NOTE_assets_sm5';
+			case "CL's Project Mania":
+				skin = 'NOTE_assets_projmania';
+			default:
+				skin = 'NOTE_assets'; // for preventing crashes
+		}
+		return skin;
 	}
 }

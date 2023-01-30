@@ -103,7 +103,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				checkbox.sprTracker = optionText;
 				checkbox.ID = i;
 				checkboxGroup.add(checkbox);
-			} else {
+			} else if (optionsArray[i].type != 'none') {
 				optionText.x -= 80;
 				optionText.xAdd -= 80;
 				var valueText:AttachedText = new AttachedText('' + optionsArray[i].getValue(), optionText.width + 80);
@@ -257,6 +257,8 @@ class BaseOptionsMenu extends MusicBeatSubstate
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				reloadCheckboxes();
 			}
+
+			if(curOption.type == 'none' && controls.ACCEPT) curOption.change();
 		}
 
 		if(boyfriend != null && boyfriend.animation.curAnim.finished) {

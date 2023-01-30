@@ -66,7 +66,7 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 
 	override public function update(elapsed:Float)
 	{
-		var controlArray:Array<Bool> = [
+/* 		var controlArray:Array<Bool> = [
 			FlxG.keys.justPressed.LEFT,
 			FlxG.keys.justPressed.DOWN,
 			FlxG.keys.justPressed.UP,
@@ -106,6 +106,17 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 					codedisplay.text = '[$currentcode]';
 					codedisplay.screenCenter(X);
 				}
+			}
+		} */
+
+		if (FlxG.keys.firstJustPressed() != -1) {
+			switch (FlxG.keys.firstJustPressed()) {
+				case 13:
+					checkCode();
+				case 27:
+					bye();
+				default:
+					currentcode = currentcode + String.fromCharCode(FlxG.keys.firstJustPressed());
 			}
 		}
 
@@ -203,7 +214,8 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 	}
 	#end
 	
-	private static function resetProgress() { //be careful for the love of god with this thing im not responsible of anything u do with this thing
+	private static function resetProgress() {
+		 //be careful for the love of god with this thing im not responsible of any progress you lose
 		FlxG.save.data.achievementsMap = null;
 		FlxG.save.data.henchmenDeath = null;
 		FlxG.save.data.totalScore = null;

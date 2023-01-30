@@ -281,7 +281,7 @@ class MainMenuState extends MusicBeatState
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				MusicBeatState.switchState(new TitleState());
 			}
-			else if (FlxG.keys.pressed.NINE) {
+			else if (FlxG.keys.pressed.UP && FlxG.keys.pressed.B && FlxG.keys.justPressed.ENTER) {
 				LoadingState.loadAndSwitchState(new options.CodeInputState());
 			}
 			#if desktop

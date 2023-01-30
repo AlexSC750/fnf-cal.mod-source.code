@@ -37,9 +37,12 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
 	private var grpTexts:FlxTypedGroup<AttachedText>;
 
+	var optDesc:FlxText;
+
 	function getOptions()
 	{
 		var goption:GameplayOption = new GameplayOption('Scroll Type', 'scrolltype', 'string', 'multiplicative', ["multiplicative", "constant"]);
+		goption.desc = 'The way the notes scroll up/down.\nMultiplicative increases the scroll speed, while Constant sets it to a fixed value.';
 		optionsArray.push(goption);
 
 		var option:GameplayOption = new GameplayOption('Scroll Speed', 'scrollspeed', 'float', 1);
@@ -56,6 +59,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			option.displayFormat = "%v";
 			option.maxValue = 6;
 		}
+		option.desc = 'How fast the notes scroll up/down.';
 		optionsArray.push(option);
 
 		/*var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
@@ -82,25 +86,32 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.displayFormat = '%vX';
 		optionsArray.push(option);
 
-		var option:GameplayOption = new GameplayOption('Instakill on Miss', 'instakill', 'bool', false);
+		var option:GameplayOption = new GameplayOption('No Miss', 'instakill', 'bool', false);
+		option.desc = 'You miss, you die. Pretty simple.';
 		optionsArray.push(option);
 
-		var option:GameplayOption = new GameplayOption('Practice Mode', 'practice', 'bool', false);
+		var option:GameplayOption = new GameplayOption('No Fail (Practice Mode)', 'practice', 'bool', false);
+		option.desc = 'Failure is not an option.';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Performance Mode (Invisible)', 'invis', 'bool', false);
+		option.desc = 'But why?';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Botplay', 'botplay', 'bool', false);
+		option.desc = 'Take a seat and watch the game play for you.';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Mirror Mode', 'mirrorcharts', 'bool', false);
+		option.desc = 'Flips the chart horizontally.';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Note Shuffle (Randomized)', 'randomcharts', 'bool', false);
+		option.desc = "Because apparently the normal charts weren't bad enough.";
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Drunk Mode', 'awkinahsjkladfcilnhbwal', 'bool', false);
+		option.desc = 'what';
 		optionsArray.push(option);
 	}
 
@@ -163,6 +174,11 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			}
 			updateTextFrom(optionsArray[i]);
 		}
+
+		optDesc = new FlxText(0,90,0,'');
+		optDesc.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.TRANSPARENT);
+		optDesc.screenCenter(X);
+		add(optDesc);
 
 		changeSelection();
 		reloadCheckboxes();
@@ -379,6 +395,8 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			}
 		}
 		curOption = optionsArray[curSelected]; //shorter lol
+		if (curOption != null) optDesc.text = curOption.desc;
+		optDesc.screenCenter(X);
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
 
@@ -414,6 +432,7 @@ class GameplayOption
 
 	public var displayFormat:String = '%v'; //How String/Float/Percent/Int values are shown, %v = Current value, %d = Default value
 	public var name:String = 'Unknown';
+	public var desc:String = "";
 
 	public function new(name:String, variable:String, type:String = 'bool', defaultValue:Dynamic = 'null variable value', ?options:Array<String> = null)
 	{

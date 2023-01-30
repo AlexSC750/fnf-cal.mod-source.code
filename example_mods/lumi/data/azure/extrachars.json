@@ -1,6 +1,0 @@
-{
-    "extraBfs": ["bf-car", "bf-christmas", "pico-player", "tankman", "spooky"],
-    "extraDads": ["pico", "mom", "tankman"],
-    "exBfOffset": [],
-    "exDadOffset": []
-}

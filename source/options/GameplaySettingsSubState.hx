@@ -93,18 +93,12 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			false);
 		addOption(option);
 
-		var option:Option = new Option('Hitsound Volume',
-			'Funny notes does \"Tick!\" when you hit them."',
-			'hitsoundVolume',
-			'percent',
-			0);
+		var option:Option = new Option('Auto-Reset on Fail',
+			"If checked, failing a song will instantly restart it.",
+			'autoReset',
+			'bool',
+			false);
 		addOption(option);
-		option.scrollSpeed = 1.6;
-		option.minValue = 0.0;
-		option.maxValue = 1;
-		option.changeValue = 0.1;
-		option.decimals = 1;
-		option.onChange = onChangeHitsoundVolume;
 
 		var option:Option = new Option('Hold Notes Visibility',
 			'These lines after hold notes will be shown with selecter visibility',
@@ -142,18 +136,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		
-
-		var option:Option = new Option('Rating Offset',
-			'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
-			'ratingOffset',
-			'int',
-			0);
-		option.displayFormat = '%vms';
-		option.scrollSpeed = 20;
-		option.minValue = -30;
-		option.maxValue = 30;
-		addOption(option);
-
 		var option:Option = new Option('Hit Window Type',
 			'Changes the current hit window preset.\n(list of timings in timingwindowlist.txt)\nNOTE: Using a preset below "Standard*" will stop score saving.',
 			'hitWindowPreset',
@@ -174,10 +156,5 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		super();
-	}
-
-	function onChangeHitsoundVolume()
-	{
-		FlxG.sound.play(Paths.sound('hitsound'), ClientPrefs.hitsoundVolume);
 	}
 }

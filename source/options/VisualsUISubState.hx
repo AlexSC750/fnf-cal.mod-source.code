@@ -35,6 +35,14 @@ class VisualsUISubState extends BaseOptionsMenu
 		title = 'Visuals and UI';
 		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
+		var option:Option = new Option('HUD Style',
+			'do i really need to explain this\n(Classis is Psych, OS is, well OS, and Custom is one I made myself)',
+			'hudStyle',
+			'string',
+			'Classic',
+			['Classic', 'OS', 'Custom']);
+		addOption(option);
+
 		var option:Option = new Option('Note Splashes',
 			"If unchecked, hitting \"Sick!\" notes won't show particles.",
 			'noteSplashes',
@@ -87,25 +95,8 @@ class VisualsUISubState extends BaseOptionsMenu
 			['OS', 'Classic']);
 		addOption(option);
 
-		var option:Option = new Option('Score Text Position',
-			'Classic is Psych Engine position, New is OS Engine position',
-			'scoreposition',
-			'string',
-			'Classic',
-			['Classic', 'New']);
-		addOption(option);
-
-		var option:Option = new Option('Colorblind Filter',
-			'You can set colorblind filter (makes the game more playable for colorblind people)',
-			'colorblindMode',
-			'string',
-			'None', 
-			['None', 'Deuteranopia', 'Protanopia', 'Tritanopia']);
-		option.onChange = ColorblindFilters.applyFiltersOnGame;
-		addOption(option);
-		
 		var option:Option = new Option('Time Bar:',
-			"What should the Time Bar display?",
+			"What should the Time Bar display?\n(NOTE: This will not be used if the OS HUD is selected.)",
 			'timeBarType',
 			'string',
 			'Time Left',
@@ -144,25 +135,6 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		option.decimals = 1;
 		addOption(option);
-		
-		#if !mobile
-		var option:Option = new Option('FPS Counter',
-			'If unchecked, hides FPS Counter.',
-			'showFPS',
-			'bool',
-			true);
-		addOption(option);
-		option.onChange = onChangeFPSCounter;
-		#end
-
-		var option:Option = new Option('Themed Main Menu Background',
-			'If checked, the background color of the main menu depends on the time of day.',
-			'themedmainmenubg',
-			'bool',
-			false);
-		option.defaultValue = false;
-		addOption(option);
-
 		/*
 		var option:Option = new Option('Auto Title Skip',
 			'If checked, automatically skips the title state.',
@@ -178,52 +150,41 @@ class VisualsUISubState extends BaseOptionsMenu
 			'noteSkinSettings',
 			'string',
 			'Classic',
-			['Classic', 'Circle', 'StepMania (Default)', 'Quaver (Arrow)', 'In The Groove', 'Stepmania 5 (Etterna)', "CL's Project Mania"]);
+			['Classic', 'Circle', 'StepMania (Default)', 'Quaver (Arrow)', 'In The Groove', 'StepMania 5 (Etterna)', "CL's Project Mania"]);
 		addOption(option);
-		
-		var option:Option = new Option('Pause Screen Song:',
-			"What song do you prefer for the Pause Screen?",
-			'pauseMusic',
-			'string',
-			'Tea Time',
-			['None', 'Breakfast', 'Tea Time']);
+
+		var option:Option = new Option('Change Note Colors', //Name
+			'Takes you to the Note Colors menu. A bit wonky, but it works.', //Description
+			'dummy', //Save data variable name
+			'none', //Variable type
+			null); //Default value
 		addOption(option);
-		option.onChange = onChangePauseMusic;
-		
-		#if CHECK_FOR_UPDATES
-		var option:Option = new Option('Check for Updates',
-			'On Release builds, turn this on to check for updates when you start the game.',
-			'checkForUpdates',
+		option.onChange = onNoteColorCheck;
+
+		var option:Option = new Option('Display Judgement Counters',
+			"Toggles the things on the left that show your hits.",
+			'displayJudges',
 			'bool',
 			true);
 		addOption(option);
-		#end
+
+		var option:Option = new Option('Judgement Counter Scale',
+			"Change the size of the judgement counters. Simple enough.",
+			'judgeScale',
+			'float',
+			0.75);
+		addOption(option);
+		option.scrollSpeed = 5;
+		option.minValue = 0.25;
+		option.maxValue = 1.5;
+		option.changeValue = 0.05;
+		option.decimals = 2;
 
 		super();
 	}
 
-	var changedMusic:Bool = false;
-	function onChangePauseMusic()
-	{
-		if(ClientPrefs.pauseMusic == 'None')
-			FlxG.sound.music.volume = 0;
-		else
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.pauseMusic)));
-
-		changedMusic = true;
-	}
-
-	override function destroy()
-	{
-		if(changedMusic) FlxG.sound.playMusic(Paths.music('freakyMenu'));
-		super.destroy();
-	}
-
-	#if !mobile
-	function onChangeFPSCounter()
-	{
-		if(Main.fpsVar != null)
-			Main.fpsVar.visible = ClientPrefs.showFPS;
-	}
-	#end
+	function onNoteColorCheck()
+		{
+			openSubState(new options.NotesSubState());
+		}
 }

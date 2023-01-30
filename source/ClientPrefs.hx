@@ -35,6 +35,7 @@ class ClientPrefs {
 	public static var opponentStrums:Bool = false;
 	public static var scoreZoom:Bool = true;
 	public static var noReset:Bool = false;
+	public static var autoReset:Bool = false;
 	public static var showMsText:Bool = true;
 	public static var healthBarAlpha:Float = 1;
 	public static var controllerMode:Bool = false;
@@ -48,6 +49,11 @@ class ClientPrefs {
 	public static var cameramoveonnotes:Bool = true;
 	public static var characterTrail:Bool = false;
 	public static var checkForUpdates:Bool = true;
+	public static var hudStyle:String = 'Classic';
+
+	public static var displayJudges:Bool = true;
+	public static var judgeScale:Float = 0.75;
+
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative', 
@@ -89,11 +95,11 @@ class ClientPrefs {
 	];
 
 	public static var hitWindowPreset:String = 'Standard*';
-		public static var marvWindow:Int = 18;
+/* 		public static var marvWindow:Int = 18;
 		public static var perfWindow:Int = 43;
 		public static var greatWindow:Int = 76;
 		public static var goodWindow:Int = 106;
-		public static var okWindow:Int = 127;
+		public static var okWindow:Int = 127; */
 	public static var safeFrames:Float = 10;
 	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
@@ -152,6 +158,7 @@ class ClientPrefs {
 		FlxG.save.data.scoreZoom = scoreZoom;
 		FlxG.save.data.characterTrail = characterTrail;
 		FlxG.save.data.noReset = noReset;
+		FlxG.save.data.autoReset = autoReset;
 		FlxG.save.data.showMsText = showMsText;
 		FlxG.save.data.holdNoteVisibility = holdNoteVisibility;
 		FlxG.save.data.healthBarAlpha = healthBarAlpha;
@@ -169,11 +176,11 @@ class ClientPrefs {
 		FlxG.save.data.showcaseMode = showcaseMode;
 
 		FlxG.save.data.hitWindowPreset = hitWindowPreset;
-			FlxG.save.data.marvWindow = hitWindowMap[hitWindowPreset][0];
+	/* 		FlxG.save.data.marvWindow = hitWindowMap[hitWindowPreset][0];
 			FlxG.save.data.perfWindow = hitWindowMap[hitWindowPreset][1];
 			FlxG.save.data.greatWindow = hitWindowMap[hitWindowPreset][2];
 			FlxG.save.data.goodWindow = hitWindowMap[hitWindowPreset][3];
-			FlxG.save.data.okWindow = hitWindowMap[hitWindowPreset][4];
+			FlxG.save.data.okWindow = hitWindowMap[hitWindowPreset][4]; */
 		FlxG.save.data.safeFrames = safeFrames;
 		FlxG.save.data.gameplaySettings = gameplaySettings;
 		FlxG.save.data.controllerMode = controllerMode;
@@ -182,6 +189,9 @@ class ClientPrefs {
 		FlxG.save.data.pauseMusic = pauseMusic;
 		FlxG.save.data.noteSkinSettings = noteSkinSettings;
 		FlxG.save.data.checkForUpdates = checkForUpdates;
+		FlxG.save.data.displayJudges = displayJudges;
+		FlxG.save.data.judgeScale = judgeScale;
+		FlxG.save.data.hudStyle = hudStyle;
 	
 		FlxG.save.flush();
 
@@ -293,6 +303,9 @@ class ClientPrefs {
 		if(FlxG.save.data.noReset != null) {
 			noReset = FlxG.save.data.noReset;
 		}
+		if(FlxG.save.data.autoReset != null) {
+			autoReset = FlxG.save.data.autoReset;
+		}
 		if(FlxG.save.data.showMsText != null) {
 			showMsText = FlxG.save.data.showMsText;
 		}
@@ -308,7 +321,7 @@ class ClientPrefs {
 		if(FlxG.save.data.hitWindowPreset != null) {
 			hitWindowPreset = FlxG.save.data.hitWindowPreset;
 		}
-			if(FlxG.save.data.marvWindow != null) {
+/* 			if(FlxG.save.data.marvWindow != null) {
 				marvWindow = FlxG.save.data.marvWindow;
 			}
 			if(FlxG.save.data.perfWindow != null) {
@@ -322,7 +335,7 @@ class ClientPrefs {
 			}
 			if(FlxG.save.data.okWindow != null) {
 				okWindow = FlxG.save.data.okWindow;
-			}
+			} */
 		if(FlxG.save.data.safeFrames != null) {
 			safeFrames = FlxG.save.data.safeFrames;
 		}
@@ -369,6 +382,18 @@ class ClientPrefs {
 		{
 			checkForUpdates = FlxG.save.data.checkForUpdates;
 		}
+		if (FlxG.save.data.displayJudges != null)
+		{
+			displayJudges = FlxG.save.data.displayJudges;
+		}
+		if (FlxG.save.data.judgeScale != null)
+		{
+			judgeScale = FlxG.save.data.judgeScale;
+		}
+		if (FlxG.save.data.hudStyle != null)
+		{
+			hudStyle = FlxG.save.data.hudStyle;
+		}
 
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v2', 'ninjamuffin99');
@@ -410,4 +435,6 @@ class ClientPrefs {
 		}
 		return copiedArray;
 	}
+
+	public static var dummy:Bool = false; // literally does nothing, just have to put it in here for audio settings
 }

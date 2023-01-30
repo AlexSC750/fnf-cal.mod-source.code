@@ -49,24 +49,7 @@ class StrumNote extends FlxSprite
 
 		var skin:String = 'NOTE_assets';
 		if (PlayState.SONG.arrowSkin == null || PlayState.SONG.arrowSkin.length <= 1) {
-			switch (ClientPrefs.noteSkinSettings) {
-				case 'Classic':
-					skin = 'NOTE_assets';
-				case 'Circle':
-					skin = 'NOTE_assets_circle';
-				case 'StepMania (Default)':
-					skin = 'NOTE_assets_stepmania';
-				case 'Quaver (Arrow)':
-					skin = 'NOTE_assets_quaver';
-				case 'In The Groove':
-					skin = 'NOTE_assets_inthegroove';
-				case 'Stepmania 5 (Etterna)':
-					skin = 'NOTE_assets_sm5';
-				case "CL's Project Mania":
-					skin = 'NOTE_assets_projmania';
-				default:
-					skin = 'NOTE_assets'; // for preventing crashes
-			}
+			skin = Note.getNoteSkinImage(ClientPrefs.noteSkinSettings);
 		}
 		if (PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) skin = PlayState.SONG.arrowSkin;
 

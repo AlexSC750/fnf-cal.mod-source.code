@@ -6,7 +6,7 @@
 	<SubTexture name="left press0000" x="0" y="320" width="160" height="160"/>
 	<SubTexture name="left confirm0000" x="0" y="480" width="200" height="200"/>
 	<SubTexture name="left confirm0001" x="200" y="480" width="200" height="200"/>
-	<SubTexture name="left confirm0002" x="400" y="500" width="160" height="160"/>
+	<SubTexture name="left confirm0002" x="400" y="500" width="160" height="160" frameX="-20" frameY="-20" frameWidth="200" frameHeight="200"/>
 	<SubTexture name="purple0000" x="0" y="0" width="160" height="160"/>
 	<SubTexture name="purple hold piece0000" x="640" y="194" width="130" height="44"/>
 	<SubTexture name="pruple end hold0000" x="640" y="120" width="130" height="74"/>
@@ -16,7 +16,7 @@
 	<SubTexture name="down press0000" x="160" y="320" width="160" height="160"/>
 	<SubTexture name="down confirm0000" x="0" y="680" width="200" height="200"/>
 	<SubTexture name="down confirm0001" x="200" y="680" width="200" height="200"/>
-	<SubTexture name="down confirm0002" x="400" y="700" width="160" height="160"/>
+	<SubTexture name="down confirm0002" x="400" y="700" width="160" height="160" frameX="-20" frameY="-20" frameWidth="200" frameHeight="200"/>
 	<SubTexture name="blue0000" x="160" y="0" width="160" height="160"/>
 	<SubTexture name="blue hold piece0000" x="640" y="314" width="130" height="44"/>
 	<SubTexture name="blue hold end0000" x="640" y="240" width="130" height="74"/>
@@ -25,7 +25,7 @@
 	<SubTexture name="up press0000" x="320" y="320" width="160" height="160"/>
 	<SubTexture name="up confirm0000" x="0" y="880" width="200" height="200"/>
 	<SubTexture name="up confirm0001" x="200" y="880" width="200" height="200"/>
-	<SubTexture name="up confirm0002" x="400" y="900" width="160" height="160"/>
+	<SubTexture name="up confirm0002" x="400" y="900" width="160" height="160" frameX="-20" frameY="-20" frameWidth="200" frameHeight="200"/>
 	<SubTexture name="green0000" x="320" y="0" width="160" height="160"/>
 	<SubTexture name="green hold piece0000" x="640" y="434" width="130" height="44"/>
 	<SubTexture name="green hold end0000" x="640" y="360" width="130" height="74"/>
@@ -35,8 +35,13 @@
 	<SubTexture name="right press0000" x="480" y="320" width="160" height="160"/>
 	<SubTexture name="right confirm0000" x="0" y="1080" width="200" height="200"/>
 	<SubTexture name="right confirm0001" x="200" y="1080" width="200" height="200"/>
-	<SubTexture name="right confirm0002" x="400" y="1100" width="160" height="160"/>
+	<SubTexture name="right confirm0002" x="400" y="1100" width="160" height="160" frameX="-20" frameY="-20" frameWidth="200" frameHeight="200"/>
 	<SubTexture name="red0000" x="480" y="0" width="160" height="160"/>
 	<SubTexture name="red hold piece0000" x="640" y="554" width="130" height="44"/>
 	<SubTexture name="red hold end0000" x="640" y="480" width="130" height="74"/>
+
+	<SubTexture name="purpleslow0000" x="0" y="1280" width="160" height="160"/>
+	<SubTexture name="blueslow0000" x="160" y="1280" width="160" height="160"/>
+	<SubTexture name="greenslow0000" x="320" y="1280" width="160" height="160"/>
+	<SubTexture name="redslow0000" x="480" y="1280" width="160" height="160"/>
 </TextureAtlas>
