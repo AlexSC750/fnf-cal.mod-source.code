@@ -59,6 +59,7 @@ class MainMenuState extends MusicBeatState
 
 		WeekData.loadTheFirstEnabledMod();
 		if (ClientPrefs.colorblindMode != null) ColorblindFilters.applyFiltersOnGame(); // applies colorbind filters, ok?
+		if(Main.fpsVar != null) Main.fpsVar.visible = ClientPrefs.showFPS;
 
 		#if desktop
 		// Updating Discord Rich Presence
@@ -82,26 +83,29 @@ class MainMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
+		var yScroll:Float = 0.2;
         var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
-        bg.scrollFactor.set(0, yScroll);
+        bg.scrollFactor.set(0, 0.2);
         bg.setGraphicSize(Std.int(bg.width));
         bg.updateHitbox();
         bg.screenCenter();
         bg.antialiasing = ClientPrefs.globalAntialiasing;
 		bg.alpha = 0.25;
         add(bg);
+		bg.y+=10;
 
         if(ClientPrefs.themedmainmenubg == true) {
 
             var themedBg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
-            themedBg.scrollFactor.set(0, yScroll);
+            themedBg.scrollFactor.set(0, 0.2);
             themedBg.setGraphicSize(Std.int(bg.width));
             themedBg.updateHitbox();
             themedBg.screenCenter();
             themedBg.antialiasing = ClientPrefs.globalAntialiasing;
 			themedBg.alpha = 0.25;
             add(themedBg);
+			themedBg.y+=10;
+			bg.visible = false;
 
             var hours:Int = Date.now().getHours();
             if(hours > 18) {
@@ -112,7 +116,7 @@ class MainMenuState extends MusicBeatState
         }
 
         magenta = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
-        magenta.scrollFactor.set(0, yScroll);
+        magenta.scrollFactor.set(0, 0.2);
         magenta.setGraphicSize(Std.int(magenta.width));
         magenta.updateHitbox();
         magenta.screenCenter();
@@ -121,6 +125,7 @@ class MainMenuState extends MusicBeatState
         magenta.color = 0xFFfd719b;
 		magenta.alpha = 0.25;
         add(magenta);
+		magenta.y+=10;
 		
 		// magenta.scrollFactor.set();
 
@@ -282,7 +287,7 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new TitleState());
 			}
 			else if (FlxG.keys.pressed.UP && FlxG.keys.pressed.B && FlxG.keys.justPressed.ENTER) {
-				LoadingState.loadAndSwitchState(new options.CodeInputState());
+				LoadingState.loadAndSwitchState(new options.DebugTestState());
 			}
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))
@@ -331,7 +336,7 @@ class MainMenuState extends MusicBeatState
 					switch (daChoice)
 					{
 						case 'story_mode':
-							MusicBeatState.switchState(new FreeplayState());
+							MusicBeatState.switchState(new StoryMenuState());
 						case 'editor':
 							MusicBeatState.switchState(new MasterEditorMenu());
 						case 'awards':

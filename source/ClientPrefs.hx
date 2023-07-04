@@ -53,6 +53,7 @@ class ClientPrefs {
 
 	public static var displayJudges:Bool = true;
 	public static var judgeScale:Float = 0.75;
+	public static var antiSpam:Bool = false;
 
 	public static var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
@@ -192,6 +193,7 @@ class ClientPrefs {
 		FlxG.save.data.displayJudges = displayJudges;
 		FlxG.save.data.judgeScale = judgeScale;
 		FlxG.save.data.hudStyle = hudStyle;
+		FlxG.save.data.antiSpam = antiSpam;
 	
 		FlxG.save.flush();
 
@@ -393,6 +395,10 @@ class ClientPrefs {
 		if (FlxG.save.data.hudStyle != null)
 		{
 			hudStyle = FlxG.save.data.hudStyle;
+		}
+		if (FlxG.save.data.antiSpam != null)
+		{
+			antiSpam = FlxG.save.data.antiSpam;
 		}
 
 		var save:FlxSave = new FlxSave();

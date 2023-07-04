@@ -3,16 +3,14 @@ package options;
 import flixel.util.FlxStringUtil;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.tweens.FlxEase;
 import flixel.text.FlxText;
-import flixel.group.FlxSpriteGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxColor;
-import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.ui.FlxBar;
-import flixel.math.FlxPoint;
+import flixel.math.FlxMath;
+import flixel.util.FlxTimer;
+import flixel.input.keyboard.FlxKey;
 
 import Achievements;
 
@@ -24,10 +22,15 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 
-	public var codedisplay:FlxText;
-	var currentcode:String = '';
+	public var codeDisplay:FlxText;
+	private var currentcode:String = '';
+	private var canInput:Bool = false;
+	private var underscoreThing:String = '';
+	private var resetThing:Int = 0;
 
-	public var warndisplay:FlxText;
+	var prefix:String = 'PS C:\\fnf-cal.mod-source.code\\export\\release\\windows\\bin> ';
+
+	public var outputDisplay:FlxText;
 
 	override public function create()
 	{
@@ -36,89 +39,66 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
+		camGame.bgColor = 0xFF000C18;
+		if(Main.fpsVar != null) Main.fpsVar.visible = false;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
 
+		camHUD.y += 500;
+
 		FlxCamera.defaultCameras = [camGame];
 		CustomFadeTransition.nextCamera = camOther;
 
-		// Stage
-		var bg:FlxSprite = new FlxSprite(0,0).loadGraphic(Paths.image('shh/wasntbotheredtoaddtheactualtextbycode'));
-		bg.setGraphicSize(0, FlxG.height);
-		bg.updateHitbox();
-		bg.screenCenter();
-		add(bg);
+		codeDisplay = new FlxText(0,0,FlxG.width, prefix, 16);
+		codeDisplay.setFormat(Paths.font("lucida.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		codeDisplay.screenCenter(X);
 
-		codedisplay = new FlxText(600,270,FlxG.width,'[]', 16);
-		codedisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		codedisplay.screenCenter(X);
-		warndisplay = new FlxText(600,333,FlxG.width,'', 16);
-		warndisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-		warndisplay.screenCenter(X);
-		add(codedisplay);
-		add(warndisplay);
+		outputDisplay = new FlxText(0,codeDisplay.height,FlxG.width,'', 16);
+		outputDisplay.setFormat(Paths.font("lucida.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		outputDisplay.screenCenter(X);
+		outputDisplay.alpha = 0;
 
 		persistentUpdate = true;
 		FlxG.sound.pause();
 		super.create();
+
+		new FlxTimer().start(1, tmr->{
+			add(codeDisplay);
+			add(outputDisplay);
+			canInput = true;
+		});
+
+		new FlxTimer().start(0.5, tmr2->{underscoreThing = (underscoreThing == '_') ? '' : '_';}, 0);
 	}
 
-	override public function update(elapsed:Float)
+	override public function update(elapsed:Float) //also this is stupidly done dont blame me idk what the fuck im doing lmao
 	{
-/* 		var controlArray:Array<Bool> = [
-			FlxG.keys.justPressed.LEFT,
-			FlxG.keys.justPressed.DOWN,
-			FlxG.keys.justPressed.UP,
-			FlxG.keys.justPressed.RIGHT,
-
-			FlxG.keys.justPressed.BACKSPACE,
-			FlxG.keys.justPressed.ENTER,
-			FlxG.keys.justPressed.ESCAPE
-		];
-
-		if(controlArray.contains(true))
-		{
-			for (i in 0...controlArray.length)
-			{
-				if(controlArray[i])
-				{
-					warndisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-					warndisplay.text = '';
-
-					switch(i)
-					{
-						case 0:
-							currentcode = currentcode + "L";
-						case 1:
-							currentcode = currentcode + "D";
-						case 2:
-							currentcode = currentcode + "U";
-						case 3:
-							currentcode = currentcode + "R";
-						case 4:
-							if (currentcode.length > 0) currentcode = currentcode.substring(0, currentcode.length -1);
-						case 5:
-							checkCode();
-						case 6:
-							bye();
-					}
-					codedisplay.text = '[$currentcode]';
-					codedisplay.screenCenter(X);
-				}
-			}
-		} */
-
-		if (FlxG.keys.firstJustPressed() != -1) {
+		if (FlxG.keys.firstJustPressed() != -1 && canInput) {
 			switch (FlxG.keys.firstJustPressed()) {
+				case 8:
+					if (currentcode.length > 0) currentcode = currentcode.substring(0, currentcode.length -1);
 				case 13:
-					checkCode();
+					canInput = false;
+					new FlxTimer().start(0.25, tmr->{checkCode();});
 				case 27:
+					canInput = false;
 					bye();
+				case 32:
+					currentcode = currentcode + ' '; //bruh
+				case 190:
+					currentcode = currentcode + '.'; //bruh 2
 				default:
-					currentcode = currentcode + String.fromCharCode(FlxG.keys.firstJustPressed());
+					if (FlxKey.toStringMap[FlxG.keys.firstJustPressed()].length == 1) { //check if its a letter
+					currentcode = currentcode + FlxKey.toStringMap[FlxG.keys.firstJustPressed()].toLowerCase();}
+					else if (FlxMath.inBounds(FlxG.keys.firstJustPressed(), 48, 57)) { //check if its a number
+						currentcode = currentcode + Std.string(FlxG.keys.firstJustPressed() -48);
+					}
 			}
 		}
+
+		if (!canInput) underscoreThing = '';
+		codeDisplay.text = prefix + currentcode + underscoreThing;
 
 		super.update(elapsed);
 	}
@@ -131,79 +111,83 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 		FlxG.sound.playMusic(Paths.music('freakyMenu'), 1, true);
 	}
 
-	function checkCode() {
+	function checkCode() { //heavily optimized this bullshit, prev one sucked ass
 
-		final codelist:Array<String> = [ //yes, these are all the codes. you're welcome.
-			// 0 = L, 1 = D, 2 = U, 3 = R
-			'DURLDRDDDURDDUUD', //lumi -> b16 -> b4
-			'LLLRRRLR', //ddr2
-			'DRLLDRDDDRLUDRLL', //purp -> b16 -> b4
-			'RLUDRDUDR', // 32767(16) -> 302131213(4)
-			'DLURLUDLR', //tkd
-			'DULRDURLDRDDDUDD', // the user who i got the secret menu style and some of the codes from
-			#if ACHIEVEMENTS_ALLOWED 'UUDDLRLR', #end //konami
-		];
+		switch(currentcode.toLowerCase())
+		{
+/* 			case 'abetterplace': //unlock a song for lumi?
+				// go back to this later
 
-		for (i in codelist) {
-			if(currentcode == i)
-			{
-				switch(codelist.indexOf(i))
-				{
-					case 0: //unlock a song?
-						// go back to this later
-					case 1: //idk
-						// do something
-					case 2: //unlock another song?
-						// go back to this later
-					case 3: //clear progress data
-						openSubState(new Prompt('This action will clear your saved progress data, and close the game.\nAre you sure you want to proceed?', 0, function(){
-							openSubState(new Prompt('Once you do this, it cannot be undone.\n\nAre you 100% sure?', 0, function(){
-								resetProgress();
-							}, null,false, 'YES!', 'no pls go back'));
-						}, null,false, 'Yes.', 'actually no'));
-					case 4: //idk
-						// do something 
-					case 5:
-						CoolUtil.browserLoad('https://youtu.be/4RNraJmO4BY');
-					case 6: //achievement
-						#if ACHIEVEMENTS_ALLOWED
-						Achievements.loadAchievements();
-						var achieveID:Int = Achievements.getAchievementIndex('password');
-						if(!Achievements.isAchievementUnlocked(Achievements.achievementsStuff[achieveID][2])) {
-							Achievements.achievementsMap.set(Achievements.achievementsStuff[achieveID][2], true);
-							giveAchievement();
-							ClientPrefs.saveSettings();
-						} else {
-							resetCode(1);
-							return;
-						}
-						#else
-						resetCode(1);
+			case 'z': //idk
+				// do something
+
+			case 'alightintheshadows': //unlock a song for purp?
+				// go back to this later
+ */
+			case 'sys.exit': //clear progress data
+				outputDisplay.alpha = 1;
+				switch (resetThing++) {
+					case 0:
+						outputDisplay.text = 'source/options/CodeInputState.hx:134: This action will clear your saved progress data, and close the game.\nAre you sure you want to proceed? (repeat to confirm)';
+						new FlxTimer().start(0.5, tmr->{canInput = true; currentcode = ''; new FlxTimer().start(5, tmr->{FlxTween.tween(outputDisplay, {alpha: 0}, 0.25);});});
 						return;
-						#end
+					case 1:
+						outputDisplay.text = 'source/options/CodeInputState.hx:138: Once you do this, it cannot be undone. Are you 100% sure?\n(repeat to confirm)';
+						new FlxTimer().start(0.5, tmr->{canInput = true; currentcode = ''; new FlxTimer().start(5, tmr->{FlxTween.tween(outputDisplay, {alpha: 0}, 0.25);});});
+						return;
+					case 2:
+						outputDisplay.text = 'source/options/CodeInputState.hx:142: Goodbye...';
+						FlxTween.tween(camGame, {alpha: 0}, 5, {onComplete: resetProgress});
+						return;
 				}
-				resetCode(0);
+/* 			case 'x': //idk
+				// do something 
+ */
+			case 'kkclue':
+				CoolUtil.browserLoad('https://youtu.be/4RNraJmO4BY');
+				outputDisplay.text = 'source/options/CodeInputState.hx:151: this guy gave me a beta of the code idea after watching this video';
+				new FlxTimer().start(0.5, tmr->{canInput = true; currentcode = ''; new FlxTimer().start(5, tmr->{FlxTween.tween(outputDisplay, {alpha: 0}, 0.25);});});
+
+			case 'lime test windows': //achievement
+				#if ACHIEVEMENTS_ALLOWED
+				Achievements.loadAchievements();
+				var achieveID:Int = Achievements.getAchievementIndex('password');
+				if(!Achievements.isAchievementUnlocked(Achievements.achievementsStuff[achieveID][2])) {
+					Achievements.achievementsMap.set(Achievements.achievementsStuff[achieveID][2], true);
+					giveAchievement();
+					ClientPrefs.saveSettings();
+				} else {
+					resetCode(1);
+					return;
+				}
+				#else
+				resetCode(1);
 				return;
-			}
+				#end
+
+			default: //not a valid code, bail out
+				resetCode(65536);
+				return;
 		}
-		resetCode(-1);
+		resetCode(0);
 	}
 
 	function resetCode(variant:Int = 0) {
+		outputDisplay.alpha = 1;
+		resetThing = 0;
+
 		switch(variant) {
 			case 0:
-				warndisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.GREEN, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-				warndisplay.text = 'Code accepted!';
-				FlxG.sound.play(Paths.sound('konamiJingle'), 0.7);
+				outputDisplay.text = 'source/options/CodeInputState.hx:174: Code accepted!';
 			case 1:
-				warndisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.YELLOW, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-				warndisplay.text = 'Code failed to work.';
+				outputDisplay.text = 'source/options/CodeInputState.hx:184: lines 184-185 : Warning : This case is unused';				
 			default:
-				warndisplay.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.RED, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-				warndisplay.text = 'Invalid code';
+				outputDisplay.text = 'source/options/CodeInputState.hx:171: characters 5-' + (5 + currentcode.length) + ' : Unknown identifier : $currentcode';
 		}
 		currentcode = '';
-		codedisplay.text = '[]';
+
+		new FlxTimer().start(1.5, tmr->{FlxTween.tween(outputDisplay, {alpha: 0}, 0.25);});
+		new FlxTimer().start(0.33, tmr->{canInput = true;});
 	}
 
 	#if ACHIEVEMENTS_ALLOWED
@@ -214,8 +198,8 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 	}
 	#end
 	
-	private static function resetProgress() {
-		 //be careful for the love of god with this thing im not responsible of any progress you lose
+	private static function resetProgress(tween:FlxTween) {
+		 //im not responsible of any progress you lose
 		FlxG.save.data.achievementsMap = null;
 		FlxG.save.data.henchmenDeath = null;
 		FlxG.save.data.totalScore = null;
@@ -224,6 +208,22 @@ class CodeInputState extends MusicBeatState //i copied this from note offset sta
 		FlxG.save.data.weekScores = null;
 		FlxG.save.flush();
 		FlxG.sound.pause();
+		trace('bye bye');
 		Sys.exit(2);
+	}
+
+	private function loadSong(song:String, ?arg:String) {
+
+		var songLow:String = Paths.formatToSongPath(song);
+		persistentUpdate = false;
+
+		PlayState.SONG = Song.loadFromJson(Highscore.formatSong(songLow, 2), songLow);
+		PlayState.isStoryMode = false;
+		PlayState.storyDifficulty = 2;
+
+		switch (arg) {
+			default:
+				// idk lmao
+		}
 	}
 }

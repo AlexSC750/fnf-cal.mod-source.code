@@ -77,6 +77,13 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 			true);
 		addOption(option);
 
+		var option:Option = new Option('Anti-Spam (dumb)',
+			"A working (but stupid) method to prevent spamming.\n(i added this cuz my bro only spams in this game :/)",
+			'antiSpam',
+			'bool',
+			false);
+		addOption(option);
+
 		/*
 		var option:Option = new Option('Note Camera Movement',
 			'If checked, camera will move when pressing notes',

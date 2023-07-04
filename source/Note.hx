@@ -113,7 +113,7 @@ class Note extends FlxSprite
 	{
 		if(isSustainNote && !animation.curAnim.name.endsWith('end'))
 		{
-			scale.y *= ratio;
+			scale.y *= ratio / ClientPrefs.getGameplaySetting('songspeed', 1);
 			updateHitbox();
 		}
 	}
@@ -291,7 +291,7 @@ class Note extends FlxSprite
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05;
 				if(PlayState.instance != null)
 				{
-					prevNote.scale.y *= PlayState.instance.songSpeed;
+					prevNote.scale.y *= PlayState.instance.songSpeed / ClientPrefs.getGameplaySetting('songspeed', 1);
 				}
 
 				if(PlayState.isPixelStage) {

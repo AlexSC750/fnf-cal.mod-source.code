@@ -59,16 +59,19 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			option.displayFormat = "%v";
 			option.maxValue = 6;
 		}
-		option.desc = 'How fast the notes scroll up/down.';
+		option.desc = 'How fast the notes scroll up/down. (duh)';
 		optionsArray.push(option);
 
-		/*var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
+		var option:GameplayOption = new GameplayOption('Playback Rate', 'songspeed', 'float', 1);
 		option.scrollSpeed = 1;
 		option.minValue = 0.5;
-		option.maxValue = 2.5;
-		option.changeValue = 0.1;
+		option.maxValue = 2;
+		option.changeValue = 0.05;
 		option.displayFormat = '%vX';
-		optionsArray.push(option);*/
+		option.desc = 'Change how fast or slow the song goes.';
+		option.decimals = 2;
+		option.stepValue = 0.05;
+		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Health Gain Multiplier', 'healthgain', 'float', 1);
 		option.scrollSpeed = 2.5;
@@ -76,6 +79,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.maxValue = 5;
 		option.changeValue = 0.1;
 		option.displayFormat = '%vX';
+		option.desc = 'How much health you gain when hitting notes.';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('Health Loss Multiplier', 'healthloss', 'float', 1);
@@ -84,6 +88,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		option.maxValue = 5;
 		option.changeValue = 0.1;
 		option.displayFormat = '%vX';
+		option.desc = 'How much health you lose when missing.';
 		optionsArray.push(option);
 
 		var option:GameplayOption = new GameplayOption('No Miss', 'instakill', 'bool', false);
@@ -429,6 +434,7 @@ class GameplayOption
 	public var minValue:Dynamic = null; //Only used in int/float/percent type
 	public var maxValue:Dynamic = null; //Only used in int/float/percent type
 	public var decimals:Int = 1; //Only used in float/percent type
+	public var stepValue:Null<Float>; //Only used in float/percent type, what multiple to lock when you HOLD
 
 	public var displayFormat:String = '%v'; //How String/Float/Percent/Int values are shown, %v = Current value, %d = Default value
 	public var name:String = 'Unknown';
@@ -496,7 +502,8 @@ class GameplayOption
 	}
 	public function setValue(value:Dynamic)
 	{
-		ClientPrefs.gameplaySettings.set(variable, value);
+		if (this.stepValue != null) ClientPrefs.gameplaySettings.set(variable, CoolUtil.quantize(value, 1 / this.stepValue))
+		else ClientPrefs.gameplaySettings.set(variable, value);
 	}
 
 	public function setChild(child:Alphabet)

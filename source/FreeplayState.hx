@@ -41,8 +41,6 @@ class FreeplayState extends MusicBeatState
 	var intendedScore:Int = 0;
 	var intendedRating:Float = 0;
 
-	var plsremindme:FlxText;
-
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var curPlaying:Bool = false;
 
@@ -144,10 +142,6 @@ class FreeplayState extends MusicBeatState
 			// songText.screenCenter(X);
 		}
 		WeekData.setDirectoryFromWeek();
-
-		plsremindme = new FlxText(0, 0, 0, "pls remind me to do the story menu thanks", 16);
-		plsremindme.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
-		add(plsremindme);
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
